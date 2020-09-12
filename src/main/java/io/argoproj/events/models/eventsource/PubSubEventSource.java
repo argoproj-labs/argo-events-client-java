@@ -78,11 +78,10 @@ public class PubSubEventSource {
   }
 
    /**
-   * TopicProjectID is GCP project ID for the the topic. By default, it is same as ProjectID.
+   * TopicProjectID identifies the project where the topic should exist or be created (assumed to be the same as ProjectID by default)
    * @return topicProjectID
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "TopicProjectID is GCP project ID for the the topic. By default, it is same as ProjectID.")
+  @ApiModelProperty(required = true, value = "TopicProjectID identifies the project where the topic should exist or be created (assumed to be the same as ProjectID by default)")
 
   public String getTopicProjectID() {
     return topicProjectID;
@@ -101,11 +100,10 @@ public class PubSubEventSource {
   }
 
    /**
-   * ProjectID is GCP project ID for the subscription. Required if you run Argo Events outside of GKE/GCE. (otherwise, the default value is its project)
+   * ProjectID is the unique identifier for your project on GCP
    * @return projectID
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "ProjectID is GCP project ID for the subscription. Required if you run Argo Events outside of GKE/GCE. (otherwise, the default value is its project)")
+  @ApiModelProperty(required = true, value = "ProjectID is the unique identifier for your project on GCP")
 
   public String getProjectID() {
     return projectID;
@@ -147,11 +145,11 @@ public class PubSubEventSource {
   }
 
    /**
-   * Topic to which the subscription should belongs. Required if you want the eventsource to create a new subscription. If you specify this field along with an existing subscription, it will be verified whether it actually belongs to the specified topic.
+   * Topic on which a subscription will be created
    * @return topic
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Topic to which the subscription should belongs. Required if you want the eventsource to create a new subscription. If you specify this field along with an existing subscription, it will be verified whether it actually belongs to the specified topic.")
+  @ApiModelProperty(value = "Topic on which a subscription will be created")
 
   public String getTopic() {
     return topic;
@@ -193,11 +191,11 @@ public class PubSubEventSource {
   }
 
    /**
-   * SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possiblity of event loss.
+   * SubscriptionID is given then use it instead of creating a new one
    * @return subscriptionID
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possiblity of event loss.")
+  @ApiModelProperty(value = "SubscriptionID is given then use it instead of creating a new one")
 
   public String getSubscriptionID() {
     return subscriptionID;

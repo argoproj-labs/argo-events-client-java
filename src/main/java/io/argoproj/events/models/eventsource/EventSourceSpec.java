@@ -271,11 +271,11 @@ public class EventSourceSpec {
   }
 
    /**
-   * Replica is the event source deployment replicas
+   * Replica is the gateway deployment replicas
    * @return replica
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Replica is the event source deployment replicas")
+  @ApiModelProperty(value = "Replica is the gateway deployment replicas")
 
   public Integer getReplica() {
     return replica;

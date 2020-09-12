@@ -1,0 +1,181 @@
+{
+    "info": {
+        "version": "v1.0.0", 
+        "title": "Argo Events"
+    }, 
+    "paths": {}, 
+    "swagger": "2.0", 
+    "definitions": {
+        "EventBusSpec": {
+            "type": "object", 
+            "description": "EventBusSpec refers to specification of eventbus resource", 
+            "properties": {
+                "nats": {
+                    "description": "NATS eventbus", 
+                    "$ref": "#/definitions/NATSBus"
+                }
+            }
+        }, 
+        "NATSConfig": {
+            "type": "object", 
+            "description": "NATSConfig holds the config of NATS", 
+            "properties": {
+                "url": {
+                    "type": "string", 
+                    "description": "NATS host url"
+                }, 
+                "accessSecret": {
+                    "description": "Secret for auth", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "clusterID": {
+                    "type": "string", 
+                    "description": "Cluster ID for nats streaming, if it's missing, treat it as NATS server"
+                }, 
+                "auth": {
+                    "type": "string", 
+                    "description": "Auth strategy, default to AuthStrategyNone"
+                }
+            }
+        }, 
+        "ContainerTemplate": {
+            "type": "object", 
+            "description": "ContainerTemplate defines customized spec for a container", 
+            "properties": {
+                "resources": {
+                    "$ref": "#/definitions/v1.ResourceRequirements"
+                }
+            }
+        }, 
+        "NativeStrategy": {
+            "type": "object", 
+            "description": "NativeStrategy indicates to install a native NATS service", 
+            "properties": {
+                "antiAffinity": {
+                    "type": "boolean"
+                }, 
+                "replicas": {
+                    "type": "integer", 
+                    "description": "Size is the NATS StatefulSet size", 
+                    "format": "int32"
+                }, 
+                "auth": {
+                    "type": "string"
+                }, 
+                "nodeSelector": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object", 
+                    "description": "NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/"
+                }, 
+                "metricsContainerTemplate": {
+                    "description": "MetricsContainerTemplate contains customized spec for metrics container", 
+                    "$ref": "#/definitions/ContainerTemplate"
+                }, 
+                "containerTemplate": {
+                    "description": "ContainerTemplate contains customized spec for NATS container", 
+                    "$ref": "#/definitions/ContainerTemplate"
+                }, 
+                "tolerations": {
+                    "items": {
+                        "$ref": "#/definitions/v1.Toleration"
+                    }, 
+                    "type": "array", 
+                    "description": "If specified, the pod's tolerations."
+                }, 
+                "persistence": {
+                    "$ref": "#/definitions/PersistenceStrategy"
+                }
+            }
+        }, 
+        "PersistenceStrategy": {
+            "type": "object", 
+            "description": "PersistenceStrategy defines the strategy of persistence", 
+            "properties": {
+                "storageClassName": {
+                    "type": "string", 
+                    "description": "Name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
+                }, 
+                "accessMode": {
+                    "type": "string", 
+                    "description": "Available access modes such as ReadWriteOnce, ReadWriteMany https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes"
+                }, 
+                "volumeSize": {
+                    "description": "Volume size, e.g. 10Gi", 
+                    "$ref": "#/definitions/resource.Quantity"
+                }
+            }
+        }, 
+        "NATSBus": {
+            "type": "object", 
+            "description": "NATSBus holds the NATS eventbus information", 
+            "properties": {
+                "exotic": {
+                    "description": "Exotic holds an exotic NATS config", 
+                    "$ref": "#/definitions/NATSConfig"
+                }, 
+                "native": {
+                    "description": "Native means to bring up a native NATS service", 
+                    "$ref": "#/definitions/NativeStrategy"
+                }
+            }
+        }, 
+        "BusConfig": {
+            "type": "object", 
+            "description": "BusConfig has the finalized configuration for EventBus", 
+            "properties": {
+                "nats": {
+                    "$ref": "#/definitions/NATSConfig"
+                }
+            }
+        }, 
+        "EventBus": {
+            "required": [
+                "metadata", 
+                "spec", 
+                "status"
+            ], 
+            "type": "object", 
+            "description": "EventBus is the definition of a eventbus resource", 
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/EventBusStatus"
+                }, 
+                "kind": {
+                    "type": "string", 
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                }, 
+                "spec": {
+                    "$ref": "#/definitions/EventBusSpec"
+                }, 
+                "apiVersion": {
+                    "type": "string", 
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+                }, 
+                "metadata": {
+                    "$ref": "#/definitions/v1.ObjectMeta"
+                }
+            }
+        }, 
+        "EventBusStatus": {
+            "type": "object", 
+            "description": "EventBusStatus holds the status of the eventbus resource", 
+            "properties": {
+                "config": {
+                    "description": "Config holds the fininalized configuration of EventBus", 
+                    "$ref": "#/definitions/BusConfig"
+                }, 
+                "conditions": {
+                    "items": {
+                        "$ref": "#/definitions/Condition"
+                    }, 
+                    "type": "array", 
+                    "description": "Conditions are the latest available observations of a resource's current state.", 
+                    "x-kubernetes-patch-strategy": "merge", 
+                    "x-kubernetes-patch-merge-key": "type"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,1072 @@
+{
+    "info": {
+        "version": "v1.0.0", 
+        "title": "Argo Events"
+    }, 
+    "paths": {}, 
+    "swagger": "2.0", 
+    "definitions": {
+        "Template": {
+            "type": "object", 
+            "description": "Template holds the information of a sensor deployment template", 
+            "properties": {
+                "securityContext": {
+                    "description": "SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.", 
+                    "$ref": "#/definitions/v1.PodSecurityContext"
+                }, 
+                "serviceAccountName": {
+                    "type": "string", 
+                    "description": "ServiceAccountName is the name of the ServiceAccount to use to run gateway pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/"
+                }, 
+                "nodeSelector": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object", 
+                    "description": "NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/"
+                }, 
+                "container": {
+                    "description": "Container is the main container image to run in the gateway pod", 
+                    "$ref": "#/definitions/v1.Container"
+                }, 
+                "volumes": {
+                    "items": {
+                        "$ref": "#/definitions/v1.Volume"
+                    }, 
+                    "type": "array", 
+                    "description": "Volumes is a list of volumes that can be mounted by containers in a workflow.", 
+                    "x-kubernetes-patch-strategy": "merge", 
+                    "x-kubernetes-patch-merge-key": "name"
+                }, 
+                "tolerations": {
+                    "items": {
+                        "$ref": "#/definitions/v1.Toleration"
+                    }, 
+                    "type": "array", 
+                    "description": "If specified, the pod's tolerations."
+                }, 
+                "metadata": {
+                    "description": "Metdata sets the pods's metadata, i.e. annotations and labels", 
+                    "$ref": "#/definitions/Metadata"
+                }
+            }
+        }, 
+        "GitArtifact": {
+            "required": [
+                "url", 
+                "cloneDirectory", 
+                "filePath"
+            ], 
+            "type": "object", 
+            "description": "GitArtifact contains information about an artifact stored in git", 
+            "properties": {
+                "remote": {
+                    "description": "Remote to manage set of tracked repositories. Defaults to \"origin\". Refer https://git-scm.com/docs/git-remote", 
+                    "$ref": "#/definitions/GitRemoteConfig"
+                }, 
+                "filePath": {
+                    "type": "string", 
+                    "description": "Path to file that contains trigger resource definition"
+                }, 
+                "url": {
+                    "type": "string", 
+                    "description": "Git URL"
+                }, 
+                "sshKeyPath": {
+                    "type": "string", 
+                    "description": "DeprecatedSSHKeyPath is path to your ssh key path. Use this if you don't want to provide username and password. ssh key path must be mounted in sensor pod. DEPRECATED: use SSHKeySecret instead."
+                }, 
+                "tag": {
+                    "type": "string", 
+                    "description": "Tag to use to pull trigger resource"
+                }, 
+                "sshKeySecret": {
+                    "description": "SSHKeySecret refers to the secret that contains SSH key", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "cloneDirectory": {
+                    "type": "string", 
+                    "description": "Directory to clone the repository. We clone complete directory because GitArtifact is not limited to any specific Git service providers. Hence we don't use any specific git provider client."
+                }, 
+                "branch": {
+                    "type": "string", 
+                    "description": "Branch to use to pull trigger resource"
+                }, 
+                "ref": {
+                    "type": "string", 
+                    "description": "Ref to use to pull trigger resource. Will result in a shallow clone and fetch."
+                }, 
+                "creds": {
+                    "description": "Creds contain reference to git username and password", 
+                    "$ref": "#/definitions/GitCreds"
+                }
+            }
+        }, 
+        "EventContext": {
+            "required": [
+                "id", 
+                "source", 
+                "specversion", 
+                "type", 
+                "datacontenttype", 
+                "subject", 
+                "time"
+            ], 
+            "type": "object", 
+            "description": "EventContext holds the context of the cloudevent received from a gateway.", 
+            "properties": {
+                "type": {
+                    "type": "string", 
+                    "description": "Type - The type of the occurrence which has happened."
+                }, 
+                "source": {
+                    "type": "string", 
+                    "description": "Source - A URI describing the event producer."
+                }, 
+                "time": {
+                    "description": "Time - A Timestamp when the event happened.", 
+                    "$ref": "#/definitions/v1.Time"
+                }, 
+                "datacontenttype": {
+                    "type": "string", 
+                    "description": "DataContentType - A MIME (RFC2046) string describing the media type of `data`."
+                }, 
+                "specversion": {
+                    "type": "string", 
+                    "description": "SpecVersion - The version of the CloudEvents specification used by the event."
+                }, 
+                "id": {
+                    "type": "string", 
+                    "description": "ID of the event; must be non-empty and unique within the scope of the producer."
+                }, 
+                "subject": {
+                    "type": "string", 
+                    "description": "Subject - The subject of the event in the context of the event producer"
+                }
+            }
+        }, 
+        "K8SResourcePolicy": {
+            "required": [
+                "backoff", 
+                "errorOnBackoffTimeout"
+            ], 
+            "type": "object", 
+            "description": "K8SResourcePolicy refers to the policy used to check the state of K8s based triggers using labels", 
+            "properties": {
+                "labels": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object", 
+                    "description": "Labels required to identify whether a resource is in success state"
+                }, 
+                "errorOnBackoffTimeout": {
+                    "type": "boolean", 
+                    "description": "ErrorOnBackoffTimeout determines whether sensor should transition to error state if the trigger policy is unable to determine the state of the resource"
+                }, 
+                "backoff": {
+                    "description": "Backoff before checking resource state", 
+                    "$ref": "#/definitions/Backoff"
+                }
+            }
+        }, 
+        "BasicAuth": {
+            "type": "object", 
+            "description": "BasicAuth contains the reference to K8s secrets that holds the username and password", 
+            "properties": {
+                "username": {
+                    "description": "Username refers to the Kubernetes secret that holds the username required for basic auth.", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "password": {
+                    "description": "Password refers to the Kubernetes secret that holds the password required for basic auth.", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }
+            }
+        }, 
+        "Trigger": {
+            "type": "object", 
+            "description": "Trigger is an action taken, output produced, an event created, a message sent", 
+            "properties": {
+                "policy": {
+                    "description": "Policy to configure backoff and execution criteria for the trigger", 
+                    "$ref": "#/definitions/TriggerPolicy"
+                }, 
+                "template": {
+                    "description": "Template describes the trigger specification.", 
+                    "$ref": "#/definitions/TriggerTemplate"
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array", 
+                    "description": "Parameters is the list of parameters applied to the trigger template definition"
+                }
+            }
+        }, 
+        "ArtifactLocation": {
+            "type": "object", 
+            "description": "ArtifactLocation describes the source location for an external artifact", 
+            "properties": {
+                "configmap": {
+                    "description": "Configmap that stores the artifact", 
+                    "$ref": "#/definitions/v1.ConfigMapKeySelector"
+                }, 
+                "git": {
+                    "description": "Git repository hosting the artifact", 
+                    "$ref": "#/definitions/GitArtifact"
+                }, 
+                "resource": {
+                    "description": "Resource is generic template for K8s resource", 
+                    "$ref": "#/definitions/Resource"
+                }, 
+                "s3": {
+                    "description": "S3 compliant artifact", 
+                    "$ref": "#/definitions/S3Artifact"
+                }, 
+                "url": {
+                    "description": "URL to fetch the artifact from", 
+                    "$ref": "#/definitions/URLArtifact"
+                }, 
+                "file": {
+                    "description": "File artifact is artifact stored in a file", 
+                    "$ref": "#/definitions/FileArtifact"
+                }, 
+                "inline": {
+                    "type": "string", 
+                    "description": "Inline artifact is embedded in sensor spec as a string"
+                }
+            }
+        }, 
+        "SensorStatus": {
+            "type": "object", 
+            "description": "SensorStatus contains information about the status of a sensor.", 
+            "properties": {
+                "conditions": {
+                    "items": {
+                        "$ref": "#/definitions/Condition"
+                    }, 
+                    "type": "array", 
+                    "description": "Conditions are the latest available observations of a resource's current state.", 
+                    "x-kubernetes-patch-strategy": "merge", 
+                    "x-kubernetes-patch-merge-key": "type"
+                }
+            }
+        }, 
+        "ArgoWorkflowTrigger": {
+            "required": [
+                "group", 
+                "version", 
+                "resource"
+            ], 
+            "type": "object", 
+            "description": "ArgoWorkflowTrigger is the trigger for the Argo Workflow", 
+            "properties": {
+                "resource": {
+                    "type": "string"
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "source": {
+                    "description": "Source of the K8 resource file(s)", 
+                    "$ref": "#/definitions/ArtifactLocation"
+                }, 
+                "version": {
+                    "type": "string"
+                }, 
+                "group": {
+                    "type": "string"
+                }, 
+                "operation": {
+                    "type": "string", 
+                    "description": "Operation refers to the type of operation performed on the argo workflow resource. Default value is Submit."
+                }
+            }
+        }, 
+        "StatusPolicy": {
+            "required": [
+                "allow"
+            ], 
+            "type": "object", 
+            "description": "StatusPolicy refers to the policy used to check the state of the trigger using response status", 
+            "properties": {
+                "allow": {
+                    "items": {
+                        "type": "integer", 
+                        "format": "int32"
+                    }, 
+                    "type": "array"
+                }
+            }
+        }, 
+        "FileArtifact": {
+            "type": "object", 
+            "description": "FileArtifact contains information about an artifact in a filesystem", 
+            "properties": {
+                "path": {
+                    "type": "string"
+                }
+            }
+        }, 
+        "StandardK8STrigger": {
+            "required": [
+                "group", 
+                "version", 
+                "resource"
+            ], 
+            "type": "object", 
+            "description": "StandardK8STrigger is the standard Kubernetes resource trigger", 
+            "properties": {
+                "resource": {
+                    "type": "string"
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "liveObject": {
+                    "type": "boolean", 
+                    "description": "LiveObject specifies whether the resource should be directly fetched from K8s instead of being marshaled from the resource artifact. If set to true, the resource artifact must contain the information required to uniquely identify the resource in the cluster, that is, you must specify \"apiVersion\", \"kind\" as well as \"name\" and \"namespace\" meta data. Only valid for operation type `update`"
+                }, 
+                "patchStrategy": {
+                    "type": "string", 
+                    "description": "PatchStrategy controls the K8s object patching strategy when the trigger operation is specified as patch. possible values: \"application/json-patch+json\" \"application/merge-patch+json\" \"application/strategic-merge-patch+json\" \"application/apply-patch+yaml\". Defaults to \"application/merge-patch+json\""
+                }, 
+                "source": {
+                    "description": "Source of the K8 resource file(s)", 
+                    "$ref": "#/definitions/ArtifactLocation"
+                }, 
+                "version": {
+                    "type": "string"
+                }, 
+                "group": {
+                    "type": "string"
+                }, 
+                "operation": {
+                    "type": "string", 
+                    "description": "Operation refers to the type of operation performed on the k8s resource. Default value is Create."
+                }
+            }
+        }, 
+        "CustomTrigger": {
+            "required": [
+                "serverURL", 
+                "secure", 
+                "spec", 
+                "payload"
+            ], 
+            "type": "object", 
+            "description": "CustomTrigger refers to the specification of the custom trigger.", 
+            "properties": {
+                "serverNameOverride": {
+                    "type": "string", 
+                    "description": "ServerNameOverride for the secure connection between sensor and custom trigger gRPC server."
+                }, 
+                "secure": {
+                    "type": "boolean", 
+                    "description": "Secure refers to type of the connection between sensor to custom trigger gRPC"
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "spec": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object", 
+                    "description": "Spec is the custom trigger resource specification that custom trigger gRPC server knows how to interpret."
+                }, 
+                "certFilePath": {
+                    "type": "string", 
+                    "description": "DeprecatedCertFilePath is path to the cert file within sensor for secure connection between sensor and custom trigger gRPC server. DEPRECATED: use CertSecret instead"
+                }, 
+                "serverURL": {
+                    "type": "string", 
+                    "description": "ServerURL is the url of the gRPC server that executes custom trigger"
+                }, 
+                "certSecret": {
+                    "description": "CertSecret refers to the secret that contains cert for secure connection between sensor and custom trigger gRPC server.", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "payload": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }
+            }
+        }, 
+        "DataFilter": {
+            "required": [
+                "path", 
+                "type", 
+                "value"
+            ], 
+            "type": "object", 
+            "description": "DataFilter describes constraints and filters for event data Regular Expressions are purposefully not a feature as they are overkill for our uses here See Rob Pike's Post: https://commandcenter.blogspot.com/2011/08/regular-expressions-in-lexing-and.html", 
+            "properties": {
+                "path": {
+                    "type": "string", 
+                    "description": "Path is the JSONPath of the event's (JSON decoded) data key Path is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'. To access an array value use the index as the key. The dot and wildcard characters can be escaped with '\\'. See https://github.com/tidwall/gjson#path-syntax for more information on how to use this."
+                }, 
+                "type": {
+                    "type": "string", 
+                    "description": "Type contains the JSON type of the data"
+                }, 
+                "value": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array", 
+                    "description": "Value is the allowed string values for this key Booleans are passed using strconv.ParseBool() Numbers are parsed using as float64 using strconv.ParseFloat() Strings are taken as is Nils this value is ignored"
+                }, 
+                "comparator": {
+                    "type": "string", 
+                    "description": "Comparator compares the event data with a user given value. Can be \">=\", \">\", \"=\", \"!=\", \"<\", or \"<=\". Is optional, and if left blank treated as equality \"=\"."
+                }
+            }
+        }, 
+        "OpenWhiskTrigger": {
+            "required": [
+                "host", 
+                "actionName", 
+                "payload"
+            ], 
+            "type": "object", 
+            "description": "OpenWhiskTrigger refers to the specification of the OpenWhisk trigger.", 
+            "properties": {
+                "authToken": {
+                    "description": "AuthToken for authentication.", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "actionName": {
+                    "type": "string", 
+                    "description": "Name of the action/function."
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "namespace": {
+                    "type": "string", 
+                    "description": "Namespace for the action. Defaults to \"_\"."
+                }, 
+                "host": {
+                    "type": "string", 
+                    "description": "Host URL of the OpenWhisk."
+                }, 
+                "version": {
+                    "type": "string", 
+                    "description": "Version for the API. Defaults to v1."
+                }, 
+                "payload": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }
+            }
+        }, 
+        "SlackTrigger": {
+            "type": "object", 
+            "description": "SlackTrigger refers to the specification of the slack notification trigger.", 
+            "properties": {
+                "message": {
+                    "type": "string", 
+                    "description": "Message refers to the message to send to the Slack channel."
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "channel": {
+                    "type": "string", 
+                    "description": "Channel refers to which Slack channel to send slack message."
+                }, 
+                "slackToken": {
+                    "description": "SlackToken refers to the Kubernetes secret that holds the slack token required to send messages.", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }
+            }
+        }, 
+        "SensorSpec": {
+            "required": [
+                "dependencies", 
+                "triggers"
+            ], 
+            "type": "object", 
+            "description": "SensorSpec represents desired sensor state", 
+            "properties": {
+                "circuit": {
+                    "type": "string", 
+                    "description": "Circuit is a boolean expression of dependency groups DEPRECATED: Use Switch in triggers instead."
+                }, 
+                "triggers": {
+                    "items": {
+                        "$ref": "#/definitions/Trigger"
+                    }, 
+                    "type": "array", 
+                    "description": "Triggers is a list of the things that this sensor evokes. These are the outputs from this sensor."
+                }, 
+                "eventBusName": {
+                    "type": "string", 
+                    "description": "EventBusName references to a EventBus name. By default the value is \"default\""
+                }, 
+                "dependencies": {
+                    "items": {
+                        "$ref": "#/definitions/EventDependency"
+                    }, 
+                    "type": "array", 
+                    "description": "Dependencies is a list of the events that this sensor is dependent on."
+                }, 
+                "template": {
+                    "description": "Template is the pod specification for the sensor", 
+                    "$ref": "#/definitions/Template"
+                }, 
+                "dependencyGroups": {
+                    "items": {
+                        "$ref": "#/definitions/DependencyGroup"
+                    }, 
+                    "type": "array", 
+                    "description": "DependencyGroups is a list of the groups of events."
+                }, 
+                "errorOnFailedRound": {
+                    "type": "boolean", 
+                    "description": "ErrorOnFailedRound if set to true, marks sensor state as `error` if the previous trigger round fails. Once sensor state is set to `error`, no further triggers will be processed."
+                }
+            }
+        }, 
+        "AWSLambdaTrigger": {
+            "required": [
+                "functionName", 
+                "region", 
+                "payload"
+            ], 
+            "type": "object", 
+            "description": "AWSLambdaTrigger refers to specification of the trigger to invoke an AWS Lambda function", 
+            "properties": {
+                "functionName": {
+                    "type": "string", 
+                    "description": "FunctionName refers to the name of the function to invoke."
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "region": {
+                    "type": "string", 
+                    "description": "Region is AWS region"
+                }, 
+                "payload": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "secretKey": {
+                    "description": "SecretKey refers K8 secret containing aws secret key", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "accessKey": {
+                    "description": "AccessKey refers K8 secret containing aws access key", 
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }
+            }
+        }, 
+        "KafkaTrigger": {
+            "required": [
+                "url", 
+                "topic", 
+                "partition", 
+                "payload"
+            ], 
+            "type": "object", 
+            "description": "KafkaTrigger refers to the specification of the Kafka trigger.", 
+            "properties": {
+                "tls": {
+                    "description": "TLS configuration for the Kafka producer.", 
+                    "$ref": "#/definitions/TLSConfig"
+                }, 
+                "partitioningKey": {
+                    "type": "string", 
+                    "description": "The partitioning key for the messages put on the Kafka topic. Defaults to broker url."
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "url": {
+                    "type": "string", 
+                    "description": "URL of the Kafka broker."
+                }, 
+                "partition": {
+                    "type": "integer", 
+                    "description": "Partition to write data to.", 
+                    "format": "int32"
+                }, 
+                "compress": {
+                    "type": "boolean", 
+                    "description": "Compress determines whether to compress message or not. Defaults to false. If set to true, compresses message using snappy compression."
+                }, 
+                "topic": {
+                    "type": "string", 
+                    "description": "Name of the topic. More info at https://kafka.apache.org/documentation/#intro_topics"
+                }, 
+                "requiredAcks": {
+                    "type": "integer", 
+                    "description": "RequiredAcks used in producer to tell the broker how many replica acknowledgements Defaults to 1 (Only wait for the leader to ack).", 
+                    "format": "int32"
+                }, 
+                "flushFrequency": {
+                    "type": "integer", 
+                    "description": "FlushFrequency refers to the frequency in milliseconds to flush batches. Defaults to 500 milliseconds.", 
+                    "format": "int32"
+                }, 
+                "payload": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }
+            }
+        }, 
+        "TriggerPolicy": {
+            "type": "object", 
+            "description": "TriggerPolicy dictates the policy for the trigger retries", 
+            "properties": {
+                "status": {
+                    "description": "Status refers to the policy used to check the state of the trigger using response status", 
+                    "$ref": "#/definitions/StatusPolicy"
+                }, 
+                "k8s": {
+                    "description": "K8SResourcePolicy refers to the policy used to check the state of K8s based triggers using using labels", 
+                    "$ref": "#/definitions/K8SResourcePolicy"
+                }
+            }
+        }, 
+        "NATSTrigger": {
+            "required": [
+                "url", 
+                "subject", 
+                "payload"
+            ], 
+            "type": "object", 
+            "description": "NATSTrigger refers to the specification of the NATS trigger.", 
+            "properties": {
+                "tls": {
+                    "description": "TLS configuration for the NATS producer.", 
+                    "$ref": "#/definitions/TLSConfig"
+                }, 
+                "url": {
+                    "type": "string", 
+                    "description": "URL of the NATS cluster."
+                }, 
+                "payload": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "subject": {
+                    "type": "string", 
+                    "description": "Name of the subject to put message on."
+                }
+            }
+        }, 
+        "TriggerSwitch": {
+            "type": "object", 
+            "description": "TriggerSwitch describes condition which must be satisfied in order to execute a trigger. Depending upon condition type, status of dependency groups is used to evaluate the result. DEPRECATED", 
+            "properties": {
+                "all": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array", 
+                    "description": "All acts as a AND operator between dependencies"
+                }, 
+                "any": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array", 
+                    "description": "Any acts as a OR operator between dependencies"
+                }
+            }
+        }, 
+        "HTTPTrigger": {
+            "required": [
+                "url", 
+                "payload"
+            ], 
+            "type": "object", 
+            "description": "HTTPTrigger is the trigger for the HTTP request", 
+            "properties": {
+                "tls": {
+                    "description": "TLS configuration for the HTTP client.", 
+                    "$ref": "#/definitions/TLSConfig"
+                }, 
+                "parameters": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }, 
+                "url": {
+                    "type": "string", 
+                    "description": "URL refers to the URL to send HTTP request to."
+                }, 
+                "basicAuth": {
+                    "description": "BasicAuth configuration for the http request.", 
+                    "$ref": "#/definitions/BasicAuth"
+                }, 
+                "method": {
+                    "type": "string", 
+                    "description": "Method refers to the type of the HTTP request. Refer https://golang.org/src/net/http/method.go for more info. Default value is POST."
+                }, 
+                "headers": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object", 
+                    "description": "Headers for the HTTP request."
+                }, 
+                "timeout": {
+                    "type": "integer", 
+                    "description": "Timeout refers to the HTTP request timeout in seconds. Default value is 60 seconds.", 
+                    "format": "int64"
+                }, 
+                "payload": {
+                    "items": {
+                        "$ref": "#/definitions/TriggerParameter"
+                    }, 
+                    "type": "array"
+                }
+            }
+        }, 
+        "Sensor": {
+            "required": [
+                "metadata", 
+                "spec", 
+                "status"
+            ], 
+            "type": "object", 
+            "description": "Sensor is the definition of a sensor resource", 
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/SensorStatus"
+                }, 
+                "kind": {
+                    "type": "string", 
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                }, 
+                "spec": {
+                    "$ref": "#/definitions/SensorSpec"
+                }, 
+                "apiVersion": {
+                    "type": "string", 
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+                }, 
+                "metadata": {
+                    "$ref": "#/definitions/v1.ObjectMeta"
+                }
+            }
+        }, 
+        "GitRemoteConfig": {
+            "required": [
+                "name", 
+                "urls"
+            ], 
+            "type": "object", 
+            "description": "GitRemoteConfig contains the configuration of a Git remote", 
+            "properties": {
+                "name": {
+                    "type": "string", 
+                    "description": "Name of the remote to fetch from."
+                }, 
+                "urls": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array", 
+                    "description": "URLs the URLs of a remote repository. It must be non-empty. Fetch will always use the first URL, while push will use all of them."
+                }
+            }
+        }, 
+        "GitCreds": {
+            "type": "object", 
+            "description": "GitCreds contain reference to git username and password", 
+            "properties": {
+                "username": {
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }, 
+                "password": {
+                    "$ref": "#/definitions/v1.SecretKeySelector"
+                }
+            }
+        }, 
+        "Metadata": {
+            "type": "object", 
+            "description": "Metadata holds the annotations and labels of an event source pod", 
+            "properties": {
+                "labels": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object"
+                }, 
+                "annotations": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }, 
+                    "type": "object"
+                }
+            }
+        }, 
+        "TriggerTemplate": {
+            "required": [
+                "name"
+            ], 
+            "type": "object", 
+            "description": "TriggerTemplate is the template that describes trigger specification.", 
+            "properties": {
+                "kafka": {
+                    "description": "Kafka refers to the trigger designed to place messages on Kafka topic.", 
+                    "$ref": "#/definitions/KafkaTrigger"
+                }, 
+                "http": {
+                    "description": "HTTP refers to the trigger designed to dispatch a HTTP request with on-the-fly constructable payload.", 
+                    "$ref": "#/definitions/HTTPTrigger"
+                }, 
+                "name": {
+                    "type": "string", 
+                    "description": "Name is a unique name of the action to take."
+                }, 
+                "nats": {
+                    "description": "NATS refers to the trigger designed to place message on NATS subject.", 
+                    "$ref": "#/definitions/NATSTrigger"
+                }, 
+                "custom": {
+                    "description": "CustomTrigger refers to the trigger designed to connect to a gRPC trigger server and execute a custom trigger.", 
+                    "$ref": "#/definitions/CustomTrigger"
+                }, 
+                "awsLambda": {
+                    "description": "AWSLambda refers to the trigger designed to invoke AWS Lambda function with with on-the-fly constructable payload.", 
+                    "$ref": "#/definitions/AWSLambdaTrigger"
+                }, 
+                "openWhisk": {
+                    "description": "OpenWhisk refers to the trigger designed to invoke OpenWhisk action.", 
+                    "$ref": "#/definitions/OpenWhiskTrigger"
+                }, 
+                "switch": {
+                    "description": "DeprecatedSwitch is the condition to execute the trigger. DEPRECATED: USE conditions instead", 
+                    "$ref": "#/definitions/TriggerSwitch"
+                }, 
+                "argoWorkflow": {
+                    "description": "ArgoWorkflow refers to the trigger that can perform various operations on an Argo workflow.", 
+                    "$ref": "#/definitions/ArgoWorkflowTrigger"
+                }, 
+                "k8s": {
+                    "description": "StandardK8STrigger refers to the trigger designed to create or update a generic Kubernetes resource.", 
+                    "$ref": "#/definitions/StandardK8STrigger"
+                }, 
+                "conditions": {
+                    "type": "string", 
+                    "description": "Conditions is the conditions to execute the trigger. For example: \"(dep01 || dep02) && dep04\""
+                }, 
+                "slack": {
+                    "description": "Slack refers to the trigger designed to send slack notification message.", 
+                    "$ref": "#/definitions/SlackTrigger"
+                }
+            }
+        }, 
+        "EventDependency": {
+            "required": [
+                "name", 
+                "eventSourceName", 
+                "eventName"
+            ], 
+            "type": "object", 
+            "description": "EventDependency describes a dependency", 
+            "properties": {
+                "eventName": {
+                    "type": "string", 
+                    "description": "EventName is the name of the event"
+                }, 
+                "eventSourceName": {
+                    "type": "string", 
+                    "description": "EventSourceName is the name of EventSource that Sensor depends on"
+                }, 
+                "filters": {
+                    "description": "Filters and rules governing toleration of success and constraints on the context and data of an event", 
+                    "$ref": "#/definitions/EventDependencyFilter"
+                }, 
+                "name": {
+                    "type": "string", 
+                    "description": "Name is a unique name of this dependency"
+                }
+            }
+        }, 
+        "URLArtifact": {
+            "required": [
+                "path"
+            ], 
+            "type": "object", 
+            "description": "URLArtifact contains information about an artifact at an http endpoint.", 
+            "properties": {
+                "path": {
+                    "type": "string", 
+                    "description": "Path is the complete URL"
+                }, 
+                "verifyCert": {
+                    "type": "boolean", 
+                    "description": "VerifyCert decides whether the connection is secure or not"
+                }
+            }
+        }, 
+        "DependencyGroup": {
+            "required": [
+                "name", 
+                "dependencies"
+            ], 
+            "type": "object", 
+            "description": "DependencyGroup is the group of dependencies", 
+            "properties": {
+                "dependencies": {
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "type": "array", 
+                    "description": "Dependencies of events"
+                }, 
+                "name": {
+                    "type": "string", 
+                    "description": "Name of the group"
+                }
+            }
+        }, 
+        "TimeFilter": {
+            "required": [
+                "start", 
+                "stop"
+            ], 
+            "type": "object", 
+            "description": "TimeFilter describes a window in time. It filters out events that occur outside the time limits. In other words, only events that occur after Start and before Stop will pass this filter.", 
+            "properties": {
+                "start": {
+                    "type": "string", 
+                    "description": "Start is the beginning of a time window in UTC. Before this time, events for this dependency are ignored. Format is hh:mm:ss."
+                }, 
+                "stop": {
+                    "type": "string", 
+                    "description": "Stop is the end of a time window in UTC. After or equal to this time, events for this dependency are ignored and Format is hh:mm:ss. If it is smaller than Start, it is treated as next day of Start (e.g.: 22:00:00-01:00:00 means 22:00:00-25:00:00)."
+                }
+            }
+        }, 
+        "TriggerParameter": {
+            "required": [
+                "dest"
+            ], 
+            "type": "object", 
+            "description": "TriggerParameter indicates a passed parameter to a service template", 
+            "properties": {
+                "dest": {
+                    "type": "string", 
+                    "description": "Dest is the JSONPath of a resource key. A path is a series of keys separated by a dot. The colon character can be escaped with '.' The -1 key can be used to append a value to an existing array. See https://github.com/tidwall/sjson#path-syntax for more information about how this is used."
+                }, 
+                "src": {
+                    "description": "Src contains a source reference to the value of the parameter from a dependency", 
+                    "$ref": "#/definitions/TriggerParameterSource"
+                }, 
+                "operation": {
+                    "type": "string", 
+                    "description": "Operation is what to do with the existing value at Dest, whether to 'prepend', 'overwrite', or 'append' it."
+                }
+            }
+        }, 
+        "EventDependencyFilter": {
+            "required": [
+                "name"
+            ], 
+            "type": "object", 
+            "description": "EventDependencyFilter defines filters and constraints for a event.", 
+            "properties": {
+                "data": {
+                    "items": {
+                        "$ref": "#/definitions/DataFilter"
+                    }, 
+                    "type": "array", 
+                    "description": "Data filter constraints with escalation"
+                }, 
+                "name": {
+                    "type": "string", 
+                    "description": "Name is the name of event filter"
+                }, 
+                "context": {
+                    "description": "Context filter constraints", 
+                    "$ref": "#/definitions/EventContext"
+                }, 
+                "time": {
+                    "description": "Time filter on the event with escalation", 
+                    "$ref": "#/definitions/TimeFilter"
+                }
+            }
+        }, 
+        "TriggerParameterSource": {
+            "required": [
+                "dependencyName"
+            ], 
+            "type": "object", 
+            "description": "TriggerParameterSource defines the source for a parameter from a event event", 
+            "properties": {
+                "dependencyName": {
+                    "type": "string", 
+                    "description": "DependencyName refers to the name of the dependency. The event which is stored for this dependency is used as payload for the parameterization. Make sure to refer to one of the dependencies you have defined under Dependencies list."
+                }, 
+                "value": {
+                    "type": "string", 
+                    "description": "Value is the default literal value to use for this parameter source This is only used if the DataKey is invalid. If the DataKey is invalid and this is not defined, this param source will produce an error."
+                }, 
+                "contextTemplate": {
+                    "type": "string", 
+                    "description": "ContextTemplate is a go-template for extracting a string from the event's context. If a ContextTemplate is provided with a ContextKey, the template will be evaluated first and fallback to the ContextKey. The templating follows the standard go-template syntax as well as sprig's extra functions. See https://pkg.go.dev/text/template and https://masterminds.github.io/sprig/"
+                }, 
+                "contextKey": {
+                    "type": "string", 
+                    "description": "ContextKey is the JSONPath of the event's (JSON decoded) context key ContextKey is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'. To access an array value use the index as the key. The dot and wildcard characters can be escaped with '\\'. See https://github.com/tidwall/gjson#path-syntax for more information on how to use this."
+                }, 
+                "dataKey": {
+                    "type": "string", 
+                    "description": "DataKey is the JSONPath of the event's (JSON decoded) data key DataKey is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'. To access an array value use the index as the key. The dot and wildcard characters can be escaped with '\\'. See https://github.com/tidwall/gjson#path-syntax for more information on how to use this."
+                }, 
+                "dataTemplate": {
+                    "type": "string", 
+                    "description": "DataTemplate is a go-template for extracting a string from the event's data. If a DataTemplate is provided with a DataKey, the template will be evaluated first and fallback to the DataKey. The templating follows the standard go-template syntax as well as sprig's extra functions. See https://pkg.go.dev/text/template and https://masterminds.github.io/sprig/"
+                }
+            }
+        }
+    }
+}
