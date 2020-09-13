@@ -187,7 +187,12 @@ build:
 	sed 's/<dependencies>/<dependencies><dependency><groupId>io.kubernetes<\/groupId><artifactId>client-java<\/artifactId><version>9.0.0<\/version><\/dependency>/g' pom.xml > tmp && mv tmp pom.xml
 	docker run -v ~/.m2:/root/.m2 -v `pwd`:/base -w /base maven:3-openjdk-8 \
 		mvn install -DskipTests -Dmaven.javadoc.skip
-	echo "\n/dist\n/.project\n/.vscode" >> .gitignore
+
+.PHONY: publish
+publish: build
+	# https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-apache-maven-for-use-with-github-packages
+	docker run -v ~/.m2:/root/.m2 -v `pwd`:/base -w /base maven:3-openjdk-8 \
+		mvn -DskipTests -Dmaven.javadoc.skip -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/argoproj-labs/argo-events-client-java deploy
 
 .PHONY: clean
 clean:
