@@ -7,735 +7,14 @@ servers:
 paths: {}
 components:
   schemas:
-    SQSEventSource:
-      description: SQSEventSource refers to event-source for AWS SQS related events
-      properties:
-        secretKey:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        queueAccountId:
-          description: QueueAccountID is the ID of the account that created the queue
-            to monitor
-          type: string
-        region:
-          description: Region is AWS region
-          type: string
-        roleARN:
-          description: RoleARN is the Amazon Resource Name (ARN) of the role to assume.
-          type: string
-        queue:
-          description: Queue is AWS SQS queue to listen to for messages
-          type: string
-        waitTimeSeconds:
-          description: WaitTimeSeconds is The duration (in seconds) for which the
-            call waits for a message to arrive in the queue before returning.
-          format: int64
-          type: integer
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        accessKey:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - queue
-      - region
-      - waitTimeSeconds
-      type: object
-    PubSubEventSource:
-      description: PubSubEventSource refers to event-source for GCP PubSub related
-        events.
-      properties:
-        topicProjectID:
-          description: TopicProjectID identifies the project where the topic should
-            exist or be created (assumed to be the same as ProjectID by default)
-          type: string
-        projectID:
-          description: ProjectID is the unique identifier for your project on GCP
-          type: string
-        deleteSubscriptionOnFinish:
-          description: DeleteSubscriptionOnFinish determines whether to delete the
-            GCP PubSub subscription once the event source is stopped.
-          type: boolean
-        topic:
-          description: Topic on which a subscription will be created
-          type: string
-        credentialSecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        subscriptionID:
-          description: SubscriptionID is given then use it instead of creating a new
-            one
-          type: string
-        credentialsFile:
-          description: CredentialsFile is the file that contains credentials to authenticate
-            for GCP Deprecated, use CredentialSecret instead
-          type: string
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - credentialsFile
-      - projectID
-      - topicProjectID
-      type: object
-    GitlabEventSource:
-      description: GitlabEventSource refers to event-source related to Gitlab events
-      properties:
-        accessToken:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        enableSSLVerification:
-          description: EnableSSLVerification to enable ssl verification
-          type: boolean
-        gitlabBaseURL:
-          description: GitlabBaseURL is the base URL for API requests to a custom
-            endpoint
-          type: string
-        webhook:
-          $ref: '#/components/schemas/WebhookContext'
-        projectID:
-          description: ProjectID is the id of project for which integration needs
-            to setup
-          type: string
-        deleteHookOnFinish:
-          description: DeleteHookOnFinish determines whether to delete the GitLab
-            hook for the project once the event source is stopped.
-          type: boolean
-        events:
-          description: Events are gitlab event to listen to. Refer https://github.com/xanzy/go-gitlab/blob/bf34eca5d13a9f4c3f501d8a97b8ac226d55e4d9/projects.go#L794.
-          items:
-            type: string
-          type: array
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - events
-      - gitlabBaseURL
-      - projectID
-      type: object
-    KafkaConsumerGroup:
-      properties:
-        groupName:
-          description: The name for the consumer group to use
-          type: string
-        oldest:
-          description: When starting up a new group do we want to start from the oldest
-            event (true) or the newest event (false), defaults to false
-          type: boolean
-        rebalanceStrategy:
-          description: 'Rebalance strategy can be one of: sticky, roundrobin, range.
-            Range is the default.'
-          type: string
-      required:
-      - groupName
-      type: object
-    KafkaEventSource:
-      description: KafkaEventSource refers to event-source for Kafka related events
-      properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
-        consumerGroup:
-          $ref: '#/components/schemas/KafkaConsumerGroup'
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        partition:
-          description: Partition name
-          type: string
-        topic:
-          description: Topic name
-          type: string
-        url:
-          description: URL to kafka cluster
-          type: string
-        version:
-          description: Specify what kafka version is being connected to enables certain
-            features in sarama, defaults to 1.0.0
-          type: string
-        limitEventsPerSecond:
-          description: Sets a limit on how many events get read from kafka per second.
-          format: int64
-          type: integer
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - partition
-      - topic
-      - url
-      type: object
-    AzureEventsHubEventSource:
-      description: AzureEventsHubEventSource describes the event source for azure
-        events hub More info at https://docs.microsoft.com/en-us/azure/event-hubs/
-      properties:
-        sharedAccessKeyName:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        sharedAccessKey:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        hubName:
-          description: Event Hub path/name
-          type: string
-        fqdn:
-          description: FQDN of the EventHubs namespace you created More info at https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - fqdn
-      - hubName
-      type: object
-    NATSEventsSource:
-      description: NATSEventsSource refers to event-source for NATS related events
-      properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
-        url:
-          description: URL to connect to NATS cluster
-          type: string
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-        subject:
-          description: Subject holds the name of the subject onto which messages are
-            published
-          type: string
-      required:
-      - subject
-      - url
-      type: object
-    StripeEventSource:
-      description: StripeEventSource describes the event source for stripe webhook
-        notifications More info at https://stripe.com/docs/webhooks
-      properties:
-        createWebhook:
-          description: CreateWebhook if specified creates a new webhook programmatically.
-          type: boolean
-        apiKey:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        webhook:
-          $ref: '#/components/schemas/WebhookContext'
-        eventFilter:
-          description: EventFilter describes the type of events to listen to. If not
-            specified, all types of events will be processed. More info at https://stripe.com/docs/api/events/list
-          items:
-            type: string
-          type: array
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      type: object
-    Metadata:
-      description: Metadata holds the annotations and labels of an event source pod
-      properties:
-        labels:
-          additionalProperties:
-            type: string
-          type: object
-        annotations:
-          additionalProperties:
-            type: string
-          type: object
-      type: object
-    RedisEventSource:
-      description: RedisEventSource describes an event source for the Redis PubSub.
-        More info at https://godoc.org/github.com/go-redis/redis#example-PubSub
-      properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        db:
-          description: DB to use. If not specified, default DB 0 will be used.
-          format: int32
-          type: integer
-        namespace:
-          description: Namespace to use to retrieve the password from. It should only
-            be specified if password is declared
-          type: string
-        channels:
-          items:
-            type: string
-          type: array
-        hostAddress:
-          description: HostAddress refers to the address of the Redis host/server
-          type: string
-        password:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - channels
-      - hostAddress
-      type: object
-    GithubEventSource:
-      description: GithubEventSource refers to event-source for github related events
-      properties:
-        insecure:
-          description: Insecure tls verification
-          type: boolean
-        webhookSecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        contentType:
-          description: ContentType of the event delivery
-          type: string
-        repository:
-          description: Repository refers to GitHub repo name i.e. argo-events
-          type: string
-        githubUploadURL:
-          description: GitHub upload URL (for GitHub Enterprise)
-          type: string
-        id:
-          description: Id is the webhook's id
-          format: int64
-          type: integer
-        webhook:
-          $ref: '#/components/schemas/WebhookContext'
-        apiToken:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        owner:
-          description: Owner refers to GitHub owner name i.e. argoproj
-          type: string
-        githubBaseURL:
-          description: GitHub base URL (for GitHub Enterprise)
-          type: string
-        active:
-          description: Active refers to status of the webhook for event deliveries.
-            https://developer.github.com/webhooks/creating/#active
-          type: boolean
-        deleteHookOnFinish:
-          description: DeleteHookOnFinish determines whether to delete the GitHub
-            hook for the repository once the event source is stopped.
-          type: boolean
-        events:
-          items:
-            type: string
-          type: array
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - events
-      - id
-      - owner
-      - repository
-      type: object
-    StorageGridFilter:
-      description: StorageGridFilter represents filters to apply to bucket notifications
-        for specifying constraints on objects
-      properties:
-        prefix:
-          type: string
-        suffix:
-          type: string
-      required:
-      - prefix
-      - suffix
-      type: object
-    Selector:
-      description: Selector represents conditional operation to select K8s objects.
-      properties:
-        operation:
-          description: Supported operations like ==, !=, <=, >= etc. Defaults to ==.
-            Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
-            for more info.
-          type: string
-        value:
-          description: Value
-          type: string
-        key:
-          description: Key name
-          type: string
-      required:
-      - key
-      - value
-      type: object
-    SlackEventSource:
-      description: SlackEventSource refers to event-source for Slack related events
-      properties:
-        signingSecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        token:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        webhook:
-          $ref: '#/components/schemas/WebhookContext'
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      type: object
-    AMQPEventSource:
-      description: AMQPEventSource refers to an event-source for AMQP stream events
-      properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
-        routingKey:
-          description: Routing key for bindings
-          type: string
-        url:
-          description: URL for rabbitmq service
-          type: string
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        exchangeName:
-          description: ExchangeName is the exchange name For more information, visit
-            https://www.rabbitmq.com/tutorials/amqp-concepts.html
-          type: string
-        exchangeType:
-          description: ExchangeType is rabbitmq exchange type
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - exchangeName
-      - exchangeType
-      - routingKey
-      - url
-      type: object
-    EmitterEventSource:
-      description: EmitterEventSource describes the event source for emitter More
-        info at https://emitter.io/develop/getting-started/
-      properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
-        password:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        broker:
-          description: Broker URI to connect to.
-          type: string
-        username:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        channelName:
-          description: ChannelName refers to the channel name
-          type: string
-        channelKey:
-          description: ChannelKey refers to the channel key
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - broker
-      - channelKey
-      - channelName
-      type: object
-    EventSourceSpec:
-      description: EventSourceSpec refers to specification of event-source resource
-      properties:
-        gitlab:
-          additionalProperties:
-            $ref: '#/components/schemas/GitlabEventSource'
-          description: Gitlab event sources
-          type: object
-        minio:
-          additionalProperties:
-            $ref: '#/components/schemas/S3Artifact'
-          description: Minio event sources
-          type: object
-        kafka:
-          additionalProperties:
-            $ref: '#/components/schemas/KafkaEventSource'
-          description: Kafka event sources
-          type: object
-        replica:
-          description: Replica is the gateway deployment replicas
-          format: int32
-          type: integer
-        file:
-          additionalProperties:
-            $ref: '#/components/schemas/FileEventSource'
-          description: File event sources
-          type: object
-        nsq:
-          additionalProperties:
-            $ref: '#/components/schemas/NSQEventSource'
-          description: NSQ event source
-          type: object
-        pulsar:
-          additionalProperties:
-            $ref: '#/components/schemas/PulsarEventSource'
-          description: Pulsar event source
-          type: object
-        calendar:
-          additionalProperties:
-            $ref: '#/components/schemas/CalendarEventSource'
-          description: Calendar event sources
-          type: object
-        hdfs:
-          additionalProperties:
-            $ref: '#/components/schemas/HDFSEventSource'
-          description: HDFS event sources
-          type: object
-        amqp:
-          additionalProperties:
-            $ref: '#/components/schemas/AMQPEventSource'
-          description: AMQP event sources
-          type: object
-        service:
-          $ref: '#/components/schemas/Service'
-        generic:
-          additionalProperties:
-            $ref: '#/components/schemas/GenericEventSource'
-          description: Generic event source
-          type: object
-        redis:
-          additionalProperties:
-            $ref: '#/components/schemas/RedisEventSource'
-          description: Redis event source
-          type: object
-        mqtt:
-          additionalProperties:
-            $ref: '#/components/schemas/MQTTEventSource'
-          description: MQTT event sources
-          type: object
-        template:
-          $ref: '#/components/schemas/Template'
-        sqs:
-          additionalProperties:
-            $ref: '#/components/schemas/SQSEventSource'
-          description: SQS event sources
-          type: object
-        webhook:
-          additionalProperties:
-            $ref: '#/components/schemas/WebhookContext'
-          description: Webhook event sources
-          type: object
-        azureEventsHub:
-          additionalProperties:
-            $ref: '#/components/schemas/AzureEventsHubEventSource'
-          description: AzureEventsHub event sources
-          type: object
-        sns:
-          additionalProperties:
-            $ref: '#/components/schemas/SNSEventSource'
-          description: SNS event sources
-          type: object
-        emitter:
-          additionalProperties:
-            $ref: '#/components/schemas/EmitterEventSource'
-          description: Emitter event source
-          type: object
-        pubSub:
-          additionalProperties:
-            $ref: '#/components/schemas/PubSubEventSource'
-          description: PubSub eevnt sources
-          type: object
-        github:
-          additionalProperties:
-            $ref: '#/components/schemas/GithubEventSource'
-          description: Github event sources
-          type: object
-        resource:
-          additionalProperties:
-            $ref: '#/components/schemas/ResourceEventSource'
-          description: Resource event sources
-          type: object
-        slack:
-          additionalProperties:
-            $ref: '#/components/schemas/SlackEventSource'
-          description: Slack event sources
-          type: object
-        eventBusName:
-          description: EventBusName references to a EventBus name. By default the
-            value is "default"
-          type: string
-        nats:
-          additionalProperties:
-            $ref: '#/components/schemas/NATSEventsSource'
-          description: NATS event sources
-          type: object
-        storageGrid:
-          additionalProperties:
-            $ref: '#/components/schemas/StorageGridEventSource'
-          description: StorageGrid event sources
-          type: object
-        stripe:
-          additionalProperties:
-            $ref: '#/components/schemas/StripeEventSource'
-          description: Stripe event sources
-          type: object
-      type: object
-    FileEventSource:
-      description: FileEventSource describes an event-source for file related events.
-      properties:
-        eventType:
-          description: Type of file operations to watch Refer https://github.com/fsnotify/fsnotify/blob/master/fsnotify.go
-            for more information
-          type: string
-        watchPathConfig:
-          $ref: '#/components/schemas/WatchPathConfig'
-        polling:
-          description: Use polling instead of inotify
-          type: boolean
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - eventType
-      - watchPathConfig
-      type: object
-    ResourceFilter:
-      description: ResourceFilter contains K8 ObjectMeta information to further filter
-        resource event objects
-      properties:
-        fields:
-          description: Fields provide listing options to K8s API to watch resource/s.
-            Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/
-            for more info.
-          items:
-            $ref: '#/components/schemas/Selector'
-          type: array
-        prefix:
-          description: Prefix filter is applied on the resource name.
-          type: string
-        labels:
-          description: Labels provide listing options to K8s API to watch resource/s.
-            Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/label-selectors/
-            for more info.
-          items:
-            $ref: '#/components/schemas/Selector'
-          type: array
-        afterStart:
-          description: If the resource is created after the start time then the event
-            is treated as valid.
-          type: boolean
-        createdBy:
-          $ref: '#/components/schemas/v1.Time'
-      type: object
-    EventSourceStatus:
-      description: EventSourceStatus holds the status of the event-source resource
-      properties:
-        conditions:
-          description: Conditions are the latest available observations of a resource's
-            current state.
-          items:
-            $ref: '#/components/schemas/Condition'
-          type: array
-          x-kubernetes-patch-strategy: merge
-          x-kubernetes-patch-merge-key: type
-      type: object
-    WatchPathConfig:
-      properties:
-        directory:
-          description: Directory to watch for events
-          type: string
-        path:
-          description: Path is relative path of object to watch with respect to the
-            directory
-          type: string
-        pathRegexp:
-          description: PathRegexp is regexp of relative path of object to watch with
-            respect to the directory
-          type: string
-      required:
-      - directory
-      type: object
-    CalendarEventSource:
-      description: CalendarEventSource describes a time based dependency. One of the
-        fields (schedule, interval, or recurrence) must be passed. Schedule takes
-        precedence over interval; interval takes precedence over recurrence
-      properties:
-        schedule:
-          description: 'Schedule is a cron-like expression. For reference, see: https://en.wikipedia.org/wiki/Cron'
-          type: string
-        interval:
-          description: Interval is a string that describes an interval duration, e.g.
-            1s, 30m, 2h...
-          type: string
-        timezone:
-          description: Timezone in which to run the schedule
-          type: string
-        userPayload:
-          description: UserPayload will be sent to sensor as extra data once the event
-            is triggered Deprecated. Please use Metadata instead.
-          format: byte
-          pattern: ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
-          type: string
-        exclusionDates:
-          items:
-            type: string
-          type: array
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - interval
-      - schedule
-      type: object
     Template:
-      description: Template holds the information of an EventSource deployment template
+      description: Template holds the information of a sensor deployment template
       properties:
-        container:
-          $ref: '#/components/schemas/v1.Container'
+        securityContext:
+          $ref: '#/components/schemas/v1.PodSecurityContext'
         serviceAccountName:
           description: 'ServiceAccountName is the name of the ServiceAccount to use
-            to run event source pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/'
+            to run gateway pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/'
           type: string
         nodeSelector:
           additionalProperties:
@@ -744,8 +23,8 @@ components:
             to fit on a node. Selector which must match a node''s labels for the pod
             to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
           type: object
-        affinity:
-          $ref: '#/components/schemas/v1.Affinity'
+        container:
+          $ref: '#/components/schemas/v1.Container'
         volumes:
           description: Volumes is a list of volumes that can be mounted by containers
             in a workflow.
@@ -759,298 +38,573 @@ components:
           items:
             $ref: '#/components/schemas/v1.Toleration'
           type: array
-        securityContext:
-          $ref: '#/components/schemas/v1.PodSecurityContext'
         metadata:
           $ref: '#/components/schemas/Metadata'
       type: object
-    MQTTEventSource:
-      description: MQTTEventSource refers to event-source for MQTT related events
+    GitArtifact:
+      description: GitArtifact contains information about an artifact stored in git
       properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
+        remote:
+          $ref: '#/components/schemas/GitRemoteConfig'
+        filePath:
+          description: Path to file that contains trigger resource definition
+          type: string
         url:
-          description: URL to connect to broker
+          description: Git URL
           type: string
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        clientId:
-          description: ClientID is the id of the client
+        sshKeyPath:
+          description: 'DeprecatedSSHKeyPath is path to your ssh key path. Use this
+            if you don''t want to provide username and password. ssh key path must
+            be mounted in sensor pod. DEPRECATED: use SSHKeySecret instead.'
           type: string
-        topic:
-          description: Topic name
+        tag:
+          description: Tag to use to pull trigger resource
           type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
+        sshKeySecret:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+        cloneDirectory:
+          description: Directory to clone the repository. We clone complete directory
+            because GitArtifact is not limited to any specific Git service providers.
+            Hence we don't use any specific git provider client.
+          type: string
+        branch:
+          description: Branch to use to pull trigger resource
+          type: string
+        ref:
+          description: Ref to use to pull trigger resource. Will result in a shallow
+            clone and fetch.
+          type: string
+        creds:
+          $ref: '#/components/schemas/GitCreds'
       required:
-      - clientId
-      - topic
+      - cloneDirectory
+      - filePath
       - url
       type: object
-    GenericEventSource:
-      description: GenericEventSource refers to a generic event source. It can be
-        used to implement a custom event source.
+    EventContext:
+      description: EventContext holds the context of the cloudevent received from
+        a gateway.
       properties:
+        type:
+          description: Type - The type of the occurrence which has happened.
+          type: string
+        source:
+          description: Source - A URI describing the event producer.
+          type: string
+        time:
+          $ref: '#/components/schemas/v1.Time'
+        datacontenttype:
+          description: DataContentType - A MIME (RFC2046) string describing the media
+            type of `data`.
+          type: string
+        specversion:
+          description: SpecVersion - The version of the CloudEvents specification
+            used by the event.
+          type: string
+        id:
+          description: ID of the event; must be non-empty and unique within the scope
+            of the producer.
+          type: string
+        subject:
+          description: Subject - The subject of the event in the context of the event
+            producer
+          type: string
+      required:
+      - datacontenttype
+      - id
+      - source
+      - specversion
+      - subject
+      - time
+      - type
+      type: object
+    K8SResourcePolicy:
+      description: K8SResourcePolicy refers to the policy used to check the state
+        of K8s based triggers using labels
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          description: Labels required to identify whether a resource is in success
+            state
+          type: object
+        errorOnBackoffTimeout:
+          description: ErrorOnBackoffTimeout determines whether sensor should transition
+            to error state if the trigger policy is unable to determine the state
+            of the resource
+          type: boolean
+        backoff:
+          $ref: '#/components/schemas/Backoff'
+      required:
+      - backoff
+      - errorOnBackoffTimeout
+      type: object
+    BasicAuth:
+      description: BasicAuth contains the reference to K8s secrets that holds the
+        username and password
+      properties:
+        username:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+        password:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+      type: object
+    Trigger:
+      description: Trigger is an action taken, output produced, an event created,
+        a message sent
+      properties:
+        policy:
+          $ref: '#/components/schemas/TriggerPolicy'
+        template:
+          $ref: '#/components/schemas/TriggerTemplate'
+        parameters:
+          description: Parameters is the list of parameters applied to the trigger
+            template definition
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+      type: object
+    ArtifactLocation:
+      description: ArtifactLocation describes the source location for an external
+        artifact
+      properties:
+        configmap:
+          $ref: '#/components/schemas/v1.ConfigMapKeySelector'
+        git:
+          $ref: '#/components/schemas/GitArtifact'
+        resource:
+          $ref: '#/components/schemas/Resource'
+        s3:
+          $ref: '#/components/schemas/S3Artifact'
+        url:
+          $ref: '#/components/schemas/URLArtifact'
+        file:
+          $ref: '#/components/schemas/FileArtifact'
+        inline:
+          description: Inline artifact is embedded in sensor spec as a string
+          type: string
+      type: object
+    SensorStatus:
+      description: SensorStatus contains information about the status of a sensor.
+      properties:
+        conditions:
+          description: Conditions are the latest available observations of a resource's
+            current state.
+          items:
+            $ref: '#/components/schemas/Condition'
+          type: array
+          x-kubernetes-patch-strategy: merge
+          x-kubernetes-patch-merge-key: type
+      type: object
+    ArgoWorkflowTrigger:
+      description: ArgoWorkflowTrigger is the trigger for the Argo Workflow
+      properties:
+        resource:
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        source:
+          $ref: '#/components/schemas/ArtifactLocation'
+        version:
+          type: string
+        group:
+          type: string
+        operation:
+          description: Operation refers to the type of operation performed on the
+            argo workflow resource. Default value is Submit.
+          type: string
+      required:
+      - group
+      - resource
+      - version
+      type: object
+    StatusPolicy:
+      description: StatusPolicy refers to the policy used to check the state of the
+        trigger using response status
+      properties:
+        allow:
+          items:
+            format: int32
+            type: integer
+          type: array
+      required:
+      - allow
+      type: object
+    FileArtifact:
+      description: FileArtifact contains information about an artifact in a filesystem
+      properties:
+        path:
+          type: string
+      type: object
+    StandardK8STrigger:
+      description: StandardK8STrigger is the standard Kubernetes resource trigger
+      properties:
+        resource:
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        liveObject:
+          description: LiveObject specifies whether the resource should be directly
+            fetched from K8s instead of being marshaled from the resource artifact.
+            If set to true, the resource artifact must contain the information required
+            to uniquely identify the resource in the cluster, that is, you must specify
+            "apiVersion", "kind" as well as "name" and "namespace" meta data. Only
+            valid for operation type `update`
+          type: boolean
+        patchStrategy:
+          description: 'PatchStrategy controls the K8s object patching strategy when
+            the trigger operation is specified as patch. possible values: "application/json-patch+json"
+            "application/merge-patch+json" "application/strategic-merge-patch+json"
+            "application/apply-patch+yaml". Defaults to "application/merge-patch+json"'
+          type: string
+        source:
+          $ref: '#/components/schemas/ArtifactLocation'
+        version:
+          type: string
+        group:
+          type: string
+        operation:
+          description: Operation refers to the type of operation performed on the
+            k8s resource. Default value is Create.
+          type: string
+      required:
+      - group
+      - resource
+      - version
+      type: object
+    CustomTrigger:
+      description: CustomTrigger refers to the specification of the custom trigger.
+      properties:
+        serverNameOverride:
+          description: ServerNameOverride for the secure connection between sensor
+            and custom trigger gRPC server.
+          type: string
+        secure:
+          description: Secure refers to type of the connection between sensor to custom
+            trigger gRPC
+          type: boolean
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        spec:
+          additionalProperties:
+            type: string
+          description: Spec is the custom trigger resource specification that custom
+            trigger gRPC server knows how to interpret.
+          type: object
+        certFilePath:
+          description: 'DeprecatedCertFilePath is path to the cert file within sensor
+            for secure connection between sensor and custom trigger gRPC server. DEPRECATED:
+            use CertSecret instead'
+          type: string
+        serverURL:
+          description: ServerURL is the url of the gRPC server that executes custom
+            trigger
+          type: string
+        certSecret:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+        payload:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+      required:
+      - payload
+      - secure
+      - serverURL
+      - spec
+      type: object
+    DataFilter:
+      description: 'DataFilter describes constraints and filters for event data Regular
+        Expressions are purposefully not a feature as they are overkill for our uses
+        here See Rob Pike''s Post: https://commandcenter.blogspot.com/2011/08/regular-expressions-in-lexing-and.html'
+      properties:
+        path:
+          description: Path is the JSONPath of the event's (JSON decoded) data key
+            Path is a series of keys separated by a dot. A key may contain wildcard
+            characters '*' and '?'. To access an array value use the index as the
+            key. The dot and wildcard characters can be escaped with '\'. See https://github.com/tidwall/gjson#path-syntax
+            for more information on how to use this.
+          type: string
+        type:
+          description: Type contains the JSON type of the data
+          type: string
         value:
-          description: Value of the event source
-          type: string
-      required:
-      - value
-      type: object
-    SNSEventSource:
-      description: SNSEventSource refers to event-source for AWS SNS related events
-      properties:
-        accessKey:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        webhook:
-          $ref: '#/components/schemas/WebhookContext'
-        secretKey:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        region:
-          description: Region is AWS region
-          type: string
-        roleARN:
-          description: RoleARN is the Amazon Resource Name (ARN) of the role to assume.
-          type: string
-        topicArn:
-          description: TopicArn
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - region
-      - topicArn
-      type: object
-    WebhookContext:
-      description: WebhookContext holds a general purpose REST API context
-      properties:
-        serverCertPath:
-          description: DeprecatedServerCertPath refers the file that contains the
-            cert.
-          type: string
-        endpoint:
-          description: REST API endpoint
-          type: string
-        serverKeyPath:
-          description: DeprecatedServerKeyPath refers the file that contains private
-            key
-          type: string
-        authSecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        serverKeySecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        method:
-          description: 'Method is HTTP request method that indicates the desired action
-            to be performed for a given resource. See RFC7231 Hypertext Transfer Protocol
-            (HTTP/1.1): Semantics and Content'
-          type: string
-        url:
-          description: URL is the url of the server.
-          type: string
-        serverCertSecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        port:
-          description: Port on which HTTP server is listening for incoming events.
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - endpoint
-      - method
-      - port
-      - url
-      type: object
-    PulsarEventSource:
-      description: PulsarEventSource describes the event source for Apache Pulsar
-      properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
-        url:
-          description: Configure the service URL for the Pulsar service.
-          type: string
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        topics:
-          description: Name of the topics to subscribe to.
+          description: Value is the allowed string values for this key Booleans are
+            passed using strconv.ParseBool() Numbers are parsed using as float64 using
+            strconv.ParseFloat() Strings are taken as is Nils this value is ignored
           items:
             type: string
           type: array
-        tlsTrustCertsSecret:
-          $ref: '#/components/schemas/v1.SecretKeySelector'
-        tlsAllowInsecureConnection:
-          description: Whether the Pulsar client accept untrusted TLS certificate
-            from broker.
-          type: boolean
-        type:
-          description: Type of the subscription. Only "exclusive" and "shared" is
-            supported. Defaults to exclusive.
+        comparator:
+          description: Comparator compares the event data with a user given value.
+            Can be ">=", ">", "=", "!=", "<", or "<=". Is optional, and if left blank
+            treated as equality "=".
           type: string
-        tlsValidateHostname:
-          description: Whether the Pulsar client verify the validity of the host name
-            from broker.
-          type: boolean
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
       required:
-      - topics
-      - url
+      - path
+      - type
+      - value
       type: object
-    StorageGridEventSource:
-      description: StorageGridEventSource refers to event-source for StorageGrid related
-        events
+    OpenWhiskTrigger:
+      description: OpenWhiskTrigger refers to the specification of the OpenWhisk trigger.
       properties:
         authToken:
           $ref: '#/components/schemas/v1.SecretKeySelector'
-        webhook:
-          $ref: '#/components/schemas/WebhookContext'
+        actionName:
+          description: Name of the action/function.
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        namespace:
+          description: Namespace for the action. Defaults to "_".
+          type: string
+        host:
+          description: Host URL of the OpenWhisk.
+          type: string
+        version:
+          description: Version for the API. Defaults to v1.
+          type: string
+        payload:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+      required:
+      - actionName
+      - host
+      - payload
+      type: object
+    SlackTrigger:
+      description: SlackTrigger refers to the specification of the slack notification
+        trigger.
+      properties:
+        message:
+          description: Message refers to the message to send to the Slack channel.
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        channel:
+          description: Channel refers to which Slack channel to send slack message.
+          type: string
+        slackToken:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+      type: object
+    SensorSpec:
+      description: SensorSpec represents desired sensor state
+      properties:
+        circuit:
+          description: 'Circuit is a boolean expression of dependency groups DEPRECATED:
+            Use Switch in triggers instead.'
+          type: string
+        triggers:
+          description: Triggers is a list of the things that this sensor evokes. These
+            are the outputs from this sensor.
+          items:
+            $ref: '#/components/schemas/Trigger'
+          type: array
+        eventBusName:
+          description: EventBusName references to a EventBus name. By default the
+            value is "default"
+          type: string
+        dependencies:
+          description: Dependencies is a list of the events that this sensor is dependent
+            on.
+          items:
+            $ref: '#/components/schemas/EventDependency'
+          type: array
+        template:
+          $ref: '#/components/schemas/Template'
+        dependencyGroups:
+          description: DependencyGroups is a list of the groups of events.
+          items:
+            $ref: '#/components/schemas/DependencyGroup'
+          type: array
+        errorOnFailedRound:
+          description: ErrorOnFailedRound if set to true, marks sensor state as `error`
+            if the previous trigger round fails. Once sensor state is set to `error`,
+            no further triggers will be processed.
+          type: boolean
+      required:
+      - dependencies
+      - triggers
+      type: object
+    AWSLambdaTrigger:
+      description: AWSLambdaTrigger refers to specification of the trigger to invoke
+        an AWS Lambda function
+      properties:
+        functionName:
+          description: FunctionName refers to the name of the function to invoke.
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
         region:
-          description: S3 region. Defaults to us-east-1
+          description: Region is AWS region
           type: string
-        bucket:
-          description: Name of the bucket to register notifications for.
-          type: string
-        events:
+        payload:
           items:
-            type: string
+            $ref: '#/components/schemas/TriggerParameter'
           type: array
-        filter:
-          $ref: '#/components/schemas/StorageGridFilter'
-        apiURL:
-          description: APIURL is the url of the storagegrid api.
-          type: string
-        topicArn:
-          description: TopicArn
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
-      required:
-      - apiURL
-      - authToken
-      - bucket
-      - topicArn
-      type: object
-    Service:
-      description: Service holds the service information eventsource exposes
-      properties:
-        clusterIP:
-          description: 'clusterIP is the IP address of the service and is usually
-            assigned randomly by the master. If an address is specified manually and
-            is not in use by others, it will be allocated to the service; otherwise,
-            creation of the service will fail. This field can not be changed through
-            updates. Valid values are "None", empty string (""), or a valid IP address.
-            "None" can be specified for headless services when proxying is not required.
-            More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies'
-          type: string
-        ports:
-          description: The list of ports that are exposed by this ClusterIP service.
-          items:
-            $ref: '#/components/schemas/v1.ServicePort'
-          type: array
-          x-kubernetes-patch-strategy: merge
-          x-kubernetes-list-type: map
-          x-kubernetes-list-map-keys:
-          - port
-          - protocol
-          x-kubernetes-patch-merge-key: port
-      type: object
-    HDFSEventSource:
-      description: HDFSEventSource refers to event-source for HDFS related events
-      properties:
-        krbUsername:
-          description: KrbUsername is the Kerberos username used with Kerberos keytab
-            It must be set if keytab is used.
-          type: string
-        addresses:
-          items:
-            type: string
-          type: array
-        checkInterval:
-          description: CheckInterval is a string that describes an interval duration
-            to check the directory state, e.g. 1s, 30m, 2h... (defaults to 1m)
-          type: string
-        krbCCacheSecret:
+        secretKey:
           $ref: '#/components/schemas/v1.SecretKeySelector'
-        krbRealm:
-          description: KrbRealm is the Kerberos realm used with Kerberos keytab It
-            must be set if keytab is used.
-          type: string
-        hdfsUser:
-          description: HDFSUser is the user to access HDFS file system. It is ignored
-            if either ccache or keytab is used.
-          type: string
-        pathRegexp:
-          description: PathRegexp is regexp of relative path of object to watch with
-            respect to the directory
-          type: string
-        krbServicePrincipalName:
-          description: KrbServicePrincipalName is the principal name of Kerberos service
-            It must be set if either ccache or keytab is used.
-          type: string
-        directory:
-          description: Directory to watch for events
-          type: string
-        path:
-          description: Path is relative path of object to watch with respect to the
-            directory
-          type: string
-        krbKeytabSecret:
+        accessKey:
           $ref: '#/components/schemas/v1.SecretKeySelector'
-        type:
-          description: Type of file operations to watch
-          type: string
-        krbConfigConfigMap:
-          $ref: '#/components/schemas/v1.ConfigMapKeySelector'
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
       required:
-      - addresses
-      - directory
-      - type
+      - functionName
+      - payload
+      - region
       type: object
-    EventSource:
-      description: EventSource is the definition of a eventsource resource
+    KafkaTrigger:
+      description: KafkaTrigger refers to the specification of the Kafka trigger.
+      properties:
+        tls:
+          $ref: '#/components/schemas/TLSConfig'
+        partitioningKey:
+          description: The partitioning key for the messages put on the Kafka topic.
+            Defaults to broker url.
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        url:
+          description: URL of the Kafka broker.
+          type: string
+        partition:
+          description: Partition to write data to.
+          format: int32
+          type: integer
+        compress:
+          description: Compress determines whether to compress message or not. Defaults
+            to false. If set to true, compresses message using snappy compression.
+          type: boolean
+        topic:
+          description: Name of the topic. More info at https://kafka.apache.org/documentation/#intro_topics
+          type: string
+        requiredAcks:
+          description: RequiredAcks used in producer to tell the broker how many replica
+            acknowledgements Defaults to 1 (Only wait for the leader to ack).
+          format: int32
+          type: integer
+        flushFrequency:
+          description: FlushFrequency refers to the frequency in milliseconds to flush
+            batches. Defaults to 500 milliseconds.
+          format: int32
+          type: integer
+        payload:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+      required:
+      - partition
+      - payload
+      - topic
+      - url
+      type: object
+    TriggerPolicy:
+      description: TriggerPolicy dictates the policy for the trigger retries
       properties:
         status:
-          $ref: '#/components/schemas/EventSourceStatus'
+          $ref: '#/components/schemas/StatusPolicy'
+        k8s:
+          $ref: '#/components/schemas/K8SResourcePolicy'
+      type: object
+    NATSTrigger:
+      description: NATSTrigger refers to the specification of the NATS trigger.
+      properties:
+        tls:
+          $ref: '#/components/schemas/TLSConfig'
+        url:
+          description: URL of the NATS cluster.
+          type: string
+        payload:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        subject:
+          description: Name of the subject to put message on.
+          type: string
+      required:
+      - payload
+      - subject
+      - url
+      type: object
+    TriggerSwitch:
+      description: TriggerSwitch describes condition which must be satisfied in order
+        to execute a trigger. Depending upon condition type, status of dependency
+        groups is used to evaluate the result. DEPRECATED
+      properties:
+        all:
+          description: All acts as a AND operator between dependencies
+          items:
+            type: string
+          type: array
+        any:
+          description: Any acts as a OR operator between dependencies
+          items:
+            type: string
+          type: array
+      type: object
+    HTTPTrigger:
+      description: HTTPTrigger is the trigger for the HTTP request
+      properties:
+        tls:
+          $ref: '#/components/schemas/TLSConfig'
+        parameters:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+        url:
+          description: URL refers to the URL to send HTTP request to.
+          type: string
+        basicAuth:
+          $ref: '#/components/schemas/BasicAuth'
+        method:
+          description: Method refers to the type of the HTTP request. Refer https://golang.org/src/net/http/method.go
+            for more info. Default value is POST.
+          type: string
+        headers:
+          additionalProperties:
+            type: string
+          description: Headers for the HTTP request.
+          type: object
+        timeout:
+          description: Timeout refers to the HTTP request timeout in seconds. Default
+            value is 60 seconds.
+          format: int64
+          type: integer
+        payload:
+          items:
+            $ref: '#/components/schemas/TriggerParameter'
+          type: array
+      required:
+      - payload
+      - url
+      type: object
+    Sensor:
+      description: Sensor is the definition of a sensor resource
+      properties:
+        status:
+          $ref: '#/components/schemas/SensorStatus'
         kind:
           description: 'Kind is a string value representing the REST resource this
             object represents. Servers may infer this from the endpoint the client
             submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
           type: string
         spec:
-          $ref: '#/components/schemas/EventSourceSpec'
+          $ref: '#/components/schemas/SensorSpec'
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
             of an object. Servers should convert recognized schemas to the latest
@@ -1063,70 +617,223 @@ components:
       - spec
       - status
       type: object
-    ResourceEventSource:
-      description: ResourceEventSource refers to a event-source for K8s resource related
-        events.
+    GitRemoteConfig:
+      description: GitRemoteConfig contains the configuration of a Git remote
       properties:
-        resource:
+        name:
+          description: Name of the remote to fetch from.
           type: string
-        namespace:
-          description: Namespace where resource is deployed
-          type: string
-        group:
-          type: string
-        filter:
-          $ref: '#/components/schemas/ResourceFilter'
-        version:
-          type: string
-        eventTypes:
-          description: EventTypes is the list of event type to watch. Possible values
-            are - ADD, UPDATE and DELETE.
+        urls:
+          description: URLs the URLs of a remote repository. It must be non-empty.
+            Fetch will always use the first URL, while push will use all of them.
           items:
             type: string
           type: array
-        metadata:
-          additionalProperties:
-            type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
-          type: object
       required:
-      - eventTypes
-      - group
-      - namespace
-      - resource
-      - version
+      - name
+      - urls
       type: object
-    NSQEventSource:
-      description: NSQEventSource describes the event source for NSQ PubSub More info
-        at https://godoc.org/github.com/nsqio/go-nsq
+    GitCreds:
+      description: GitCreds contain reference to git username and password
       properties:
-        tls:
-          $ref: '#/components/schemas/TLSConfig'
-        connectionBackoff:
-          $ref: '#/components/schemas/Backoff'
-        jsonBody:
-          description: JSONBody specifies that all event body payload coming from
-            this source will be JSON
-          type: boolean
-        topic:
-          description: Topic to subscribe to.
-          type: string
-        hostAddress:
-          description: HostAddress is the address of the host for NSQ lookup
-          type: string
-        channel:
-          description: Channel used for subscription
-          type: string
-        metadata:
+        username:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+        password:
+          $ref: '#/components/schemas/v1.SecretKeySelector'
+      type: object
+    Metadata:
+      description: Metadata holds the annotations and labels of an event source pod
+      properties:
+        labels:
           additionalProperties:
             type: string
-          description: Metadata holds the user defined metadata which will passed
-            along the event payload.
           type: object
+        annotations:
+          additionalProperties:
+            type: string
+          type: object
+      type: object
+    TriggerTemplate:
+      description: TriggerTemplate is the template that describes trigger specification.
+      properties:
+        kafka:
+          $ref: '#/components/schemas/KafkaTrigger'
+        http:
+          $ref: '#/components/schemas/HTTPTrigger'
+        name:
+          description: Name is a unique name of the action to take.
+          type: string
+        nats:
+          $ref: '#/components/schemas/NATSTrigger'
+        custom:
+          $ref: '#/components/schemas/CustomTrigger'
+        awsLambda:
+          $ref: '#/components/schemas/AWSLambdaTrigger'
+        openWhisk:
+          $ref: '#/components/schemas/OpenWhiskTrigger'
+        switch:
+          $ref: '#/components/schemas/TriggerSwitch'
+        argoWorkflow:
+          $ref: '#/components/schemas/ArgoWorkflowTrigger'
+        k8s:
+          $ref: '#/components/schemas/StandardK8STrigger'
+        conditions:
+          description: 'Conditions is the conditions to execute the trigger. For example:
+            "(dep01 || dep02) && dep04"'
+          type: string
+        slack:
+          $ref: '#/components/schemas/SlackTrigger'
       required:
-      - channel
-      - hostAddress
-      - topic
+      - name
+      type: object
+    EventDependency:
+      description: EventDependency describes a dependency
+      properties:
+        eventName:
+          description: EventName is the name of the event
+          type: string
+        eventSourceName:
+          description: EventSourceName is the name of EventSource that Sensor depends
+            on
+          type: string
+        filters:
+          $ref: '#/components/schemas/EventDependencyFilter'
+        name:
+          description: Name is a unique name of this dependency
+          type: string
+      required:
+      - eventName
+      - eventSourceName
+      - name
+      type: object
+    URLArtifact:
+      description: URLArtifact contains information about an artifact at an http endpoint.
+      properties:
+        path:
+          description: Path is the complete URL
+          type: string
+        verifyCert:
+          description: VerifyCert decides whether the connection is secure or not
+          type: boolean
+      required:
+      - path
+      type: object
+    DependencyGroup:
+      description: DependencyGroup is the group of dependencies
+      properties:
+        dependencies:
+          description: Dependencies of events
+          items:
+            type: string
+          type: array
+        name:
+          description: Name of the group
+          type: string
+      required:
+      - dependencies
+      - name
+      type: object
+    TimeFilter:
+      description: TimeFilter describes a window in time. It filters out events that
+        occur outside the time limits. In other words, only events that occur after
+        Start and before Stop will pass this filter.
+      properties:
+        start:
+          description: Start is the beginning of a time window in UTC. Before this
+            time, events for this dependency are ignored. Format is hh:mm:ss.
+          type: string
+        stop:
+          description: 'Stop is the end of a time window in UTC. After or equal to
+            this time, events for this dependency are ignored and Format is hh:mm:ss.
+            If it is smaller than Start, it is treated as next day of Start (e.g.:
+            22:00:00-01:00:00 means 22:00:00-25:00:00).'
+          type: string
+      required:
+      - start
+      - stop
+      type: object
+    TriggerParameter:
+      description: TriggerParameter indicates a passed parameter to a service template
+      properties:
+        dest:
+          description: Dest is the JSONPath of a resource key. A path is a series
+            of keys separated by a dot. The colon character can be escaped with '.'
+            The -1 key can be used to append a value to an existing array. See https://github.com/tidwall/sjson#path-syntax
+            for more information about how this is used.
+          type: string
+        src:
+          $ref: '#/components/schemas/TriggerParameterSource'
+        operation:
+          description: Operation is what to do with the existing value at Dest, whether
+            to 'prepend', 'overwrite', or 'append' it.
+          type: string
+      required:
+      - dest
+      type: object
+    EventDependencyFilter:
+      description: EventDependencyFilter defines filters and constraints for a event.
+      properties:
+        data:
+          description: Data filter constraints with escalation
+          items:
+            $ref: '#/components/schemas/DataFilter'
+          type: array
+        name:
+          description: Name is the name of event filter
+          type: string
+        context:
+          $ref: '#/components/schemas/EventContext'
+        time:
+          $ref: '#/components/schemas/TimeFilter'
+      required:
+      - name
+      type: object
+    TriggerParameterSource:
+      description: TriggerParameterSource defines the source for a parameter from
+        a event event
+      properties:
+        dependencyName:
+          description: DependencyName refers to the name of the dependency. The event
+            which is stored for this dependency is used as payload for the parameterization.
+            Make sure to refer to one of the dependencies you have defined under Dependencies
+            list.
+          type: string
+        value:
+          description: Value is the default literal value to use for this parameter
+            source This is only used if the DataKey is invalid. If the DataKey is
+            invalid and this is not defined, this param source will produce an error.
+          type: string
+        contextTemplate:
+          description: ContextTemplate is a go-template for extracting a string from
+            the event's context. If a ContextTemplate is provided with a ContextKey,
+            the template will be evaluated first and fallback to the ContextKey. The
+            templating follows the standard go-template syntax as well as sprig's
+            extra functions. See https://pkg.go.dev/text/template and https://masterminds.github.io/sprig/
+          type: string
+        contextKey:
+          description: ContextKey is the JSONPath of the event's (JSON decoded) context
+            key ContextKey is a series of keys separated by a dot. A key may contain
+            wildcard characters '*' and '?'. To access an array value use the index
+            as the key. The dot and wildcard characters can be escaped with '\'. See
+            https://github.com/tidwall/gjson#path-syntax for more information on how
+            to use this.
+          type: string
+        dataKey:
+          description: DataKey is the JSONPath of the event's (JSON decoded) data
+            key DataKey is a series of keys separated by a dot. A key may contain
+            wildcard characters '*' and '?'. To access an array value use the index
+            as the key. The dot and wildcard characters can be escaped with '\'. See
+            https://github.com/tidwall/gjson#path-syntax for more information on how
+            to use this.
+          type: string
+        dataTemplate:
+          description: DataTemplate is a go-template for extracting a string from
+            the event's data. If a DataTemplate is provided with a DataKey, the template
+            will be evaluated first and fallback to the DataKey. The templating follows
+            the standard go-template syntax as well as sprig's extra functions. See
+            https://pkg.go.dev/text/template and https://masterminds.github.io/sprig/
+          type: string
+      required:
+      - dependencyName
       type: object
 

@@ -29,7 +29,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.ISODateTimeFormat;
 
-import io.argoproj.events.models.eventsource.*;
+import io.argoproj.events.models.sensor.*;
 import okio.ByteString;
 
 import java.io.IOException;

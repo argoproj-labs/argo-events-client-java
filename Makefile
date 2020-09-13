@@ -24,6 +24,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
+		--global-property models,supportingFiles \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.common \
@@ -35,6 +36,7 @@ build:
 		--import-mappings V1ConfigMapKeySelector=io.kubernetes.client.openapi.models.V1ConfigMapKeySelector \
 		--import-mappings V1SecretKeySelector=io.kubernetes.client.openapi.models.V1SecretKeySelector \
 		--generate-alias-as-model
+
 	
 	# event bus
 	docker run --rm -v `pwd -P`:/base openapitools/openapi-generator-cli:$(GENERATOR_VERSION) \
@@ -44,6 +46,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
+		--global-property models,supportingFiles \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.eventbus \
@@ -89,6 +92,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
+		--global-property models,supportingFiles \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.eventsource \
@@ -133,9 +137,10 @@ build:
 		generate \
 		-i /base/dist/sensor.swagger.json \
 		-g java \
-		-o java \
+		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
+		--global-property models,supportingFiles \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.sensor \
@@ -179,6 +184,4 @@ build:
 	docker run -v ~/.m2:/root/.m2 -v `pwd`:/base -w /base maven:3-openjdk-8 \
 		mvn install -DskipTests -Dmaven.javadoc.skip
 	echo "\n/dist" >> .gitignore
-	git add .
-	#git commit -m 'Updated to $(VERSION)' || git diff --exit-code
-	#git tag -f $(VERSION)
+
