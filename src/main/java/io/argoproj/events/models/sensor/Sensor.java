@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 @ApiModel(description = "Sensor is the definition of a sensor resource")
 
-public class Sensor {
+public class Sensor implements io.kubernetes.client.common.KubernetesObject {
   public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_STATUS)
   private SensorStatus status;

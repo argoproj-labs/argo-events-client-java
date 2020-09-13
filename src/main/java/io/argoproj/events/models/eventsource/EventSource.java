@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 @ApiModel(description = "EventSource is the definition of a eventsource resource")
 
-public class EventSource {
+public class EventSource implements io.kubernetes.client.common.KubernetesObject {
   public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_STATUS)
   private EventSourceStatus status;

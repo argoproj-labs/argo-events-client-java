@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 @ApiModel(description = "EventBus is the definition of a eventbus resource")
 
-public class EventBus {
+public class EventBus implements io.kubernetes.client.common.KubernetesObject {
   public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_STATUS)
   private EventBusStatus status;

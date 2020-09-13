@@ -33,7 +33,7 @@ import java.util.List;
  */
 @ApiModel(description = "EventBusList is the list of eventbus resources")
 
-public class EventBusList {
+public class EventBusList implements io.kubernetes.client.common.KubernetesListObject {
   public static final String SERIALIZED_NAME_ITEMS = "items";
   @SerializedName(SERIALIZED_NAME_ITEMS)
   private List<EventBus> items = new ArrayList<EventBus>();

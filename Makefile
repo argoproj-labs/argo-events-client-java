@@ -5,7 +5,6 @@ GENERATOR_VERSION := v4.3.1
 
 .PHONY: build
 build:
-	#find . -mindepth 1 -maxdepth 1 -not -name Makefile -not -name .git -not -name .gitignore -not -name hack -not -name README.md -not -name swagger.json -exec rm -Rf {} ';'
 	rm -Rf ./docs ./src/test ./src/main/java/io/argoproj/events/models pom.xml
 	#curl -L -o swagger.json https://raw.githubusercontent.com/argoproj/argo-events/$(VERSION)/api/openapi-spec/swagger.json
 	mkdir -p ./dist
@@ -177,6 +176,13 @@ build:
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
 		--import-mappings Resource=java.lang.Object \
 		--generate-alias-as-model
+	
+	sed 's/public class EventBus/public class EventBus implements io.kubernetes.client.common.KubernetesObject/g' src/main/java/io/argoproj/events/models/eventbus/EventBus.java > tmp && mv tmp src/main/java/io/argoproj/events/models/eventbus/EventBus.java
+	sed 's/public class EventBusList/public class EventBusList implements io.kubernetes.client.common.KubernetesListObject/g' src/main/java/io/argoproj/events/models/eventbus/EventBusList.java > tmp && mv tmp src/main/java/io/argoproj/events/models/eventbus/EventBusList.java
+	sed 's/public class EventSource/public class EventSource implements io.kubernetes.client.common.KubernetesObject/g' src/main/java/io/argoproj/events/models/eventsource/EventSource.java > tmp && mv tmp src/main/java/io/argoproj/events/models/eventsource/EventSource.java
+	sed 's/public class EventSourceList/public class EventSourceList implements io.kubernetes.client.common.KubernetesListObject/g' src/main/java/io/argoproj/events/models/eventsource/EventSourceList.java > tmp && mv tmp src/main/java/io/argoproj/events/models/eventsource/EventSourceList.java
+	sed 's/public class Sensor/public class Sensor implements io.kubernetes.client.common.KubernetesObject/g' src/main/java/io/argoproj/events/models/sensor/Sensor.java > tmp && mv tmp src/main/java/io/argoproj/events/models/sensor/Sensor.java
+	sed 's/public class SensorList/public class SensorList implements io.kubernetes.client.common.KubernetesListObject/g' src/main/java/io/argoproj/events/models/sensor/SensorList.java > tmp && mv tmp src/main/java/io/argoproj/events/models/sensor/SensorList.java
 	
 	sed 's/<dependencies>/<dependencies><dependency><groupId>io.kubernetes<\/groupId><artifactId>client-java<\/artifactId><version>9.0.0<\/version><\/dependency>/g' pom.xml > tmp && mv tmp pom.xml
 	docker run -v ~/.m2:/root/.m2 -v `pwd`:/base -w /base maven:3-openjdk-8 \

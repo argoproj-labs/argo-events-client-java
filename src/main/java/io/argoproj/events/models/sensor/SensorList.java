@@ -33,7 +33,7 @@ import java.util.List;
  */
 @ApiModel(description = "SensorList is the list of Sensor resources")
 
-public class SensorList {
+public class SensorList implements io.kubernetes.client.common.KubernetesListObject {
   public static final String SERIALIZED_NAME_ITEMS = "items";
   @SerializedName(SERIALIZED_NAME_ITEMS)
   private List<Sensor> items = new ArrayList<Sensor>();
