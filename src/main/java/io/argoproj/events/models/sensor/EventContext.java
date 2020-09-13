@@ -26,9 +26,9 @@ import java.io.IOException;
 import org.joda.time.DateTime;
 
 /**
- * EventContext holds the context of the cloudevent received from a gateway.
+ * EventContext holds the context of the cloudevent received from an event source.
  */
-@ApiModel(description = "EventContext holds the context of the cloudevent received from a gateway.")
+@ApiModel(description = "EventContext holds the context of the cloudevent received from an event source.")
 
 public class EventContext {
   public static final String SERIALIZED_NAME_TYPE = "type";

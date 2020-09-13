@@ -98,11 +98,11 @@ public class Template {
   }
 
    /**
-   * ServiceAccountName is the name of the ServiceAccount to use to run gateway pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+   * ServiceAccountName is the name of the ServiceAccount to use to run sensor pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
    * @return serviceAccountName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "ServiceAccountName is the name of the ServiceAccount to use to run gateway pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/")
+  @ApiModelProperty(value = "ServiceAccountName is the name of the ServiceAccount to use to run sensor pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/")
 
   public String getServiceAccountName() {
     return serviceAccountName;

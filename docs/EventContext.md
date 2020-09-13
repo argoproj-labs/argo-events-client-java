@@ -2,7 +2,7 @@
 
 # EventContext
 
-EventContext holds the context of the cloudevent received from a gateway.
+EventContext holds the context of the cloudevent received from an event source.
 ## Properties
 
 Name | Type | Description | Notes

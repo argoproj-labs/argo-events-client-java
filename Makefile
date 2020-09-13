@@ -2,14 +2,12 @@ VERSION := v1.0.0
 
 GENERATOR_VERSION := v4.3.1
 
-.PHONY: clean
-clean:
-	rm -Rf dist
 
 .PHONY: build
 build:
-	find . -mindepth 1 -maxdepth 1 -not -name Makefile -not -name .git -not -name .gitignore -not -name hack -exec rm -Rf {} ';'
-	curl -L -o swagger.json https://raw.githubusercontent.com/argoproj/argo-events/$(VERSION)/api/openapi-spec/swagger.json
+	#find . -mindepth 1 -maxdepth 1 -not -name Makefile -not -name .git -not -name .gitignore -not -name hack -not -name README.md -not -name swagger.json -exec rm -Rf {} ';'
+	rm -Rf ./docs ./src/test ./src/main/java/io/argoproj/events/models pom.xml
+	#curl -L -o swagger.json https://raw.githubusercontent.com/argoproj/argo-events/$(VERSION)/api/openapi-spec/swagger.json
 	mkdir -p ./dist
 	cat swagger.json | ./hack/swaggerfilter.py io.argoproj.common | sed 's/io.argoproj.common.//' | sed 's/io.k8s.api.core.//' | sed 's/io.k8s.apimachinery.pkg.apis.meta.//' > dist/common.swagger.json
 	cat swagger.json | ./hack/swaggerfilter.py io.argoproj.eventbus.v1alpha1 | sed 's/io.argoproj.common.//' | sed 's/io.argoproj.eventbus.v1alpha1.//' | sed 's/io.k8s.api.core.//' | sed 's/io.k8s.apimachinery.pkg.apis.meta.//' | sed 's/io.k8s.apimachinery.pkg.api.resource./resource./'  > dist/eventbus.swagger.json
@@ -24,7 +22,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
-		--global-property models,supportingFiles \
+		--global-property models,supportingFiles=pom.xml \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.common \
@@ -46,7 +44,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
-		--global-property models,supportingFiles \
+		--global-property models,supportingFiles=pom.xml \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.eventbus \
@@ -92,7 +90,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
-		--global-property models,supportingFiles \
+		--global-property models,supportingFiles=pom.xml \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.eventsource \
@@ -140,7 +138,7 @@ build:
 		-o /base \
 		-p hideGenerationTimestamp=true \
 		-p dateLibrary=joda \
-		--global-property models,supportingFiles \
+		--global-property models,supportingFiles=pom.xml \
 		--api-package io.argoproj.events.apis \
 		--invoker-package io.argoproj.events \
 		--model-package io.argoproj.events.models.sensor \
@@ -183,5 +181,8 @@ build:
 	sed 's/<dependencies>/<dependencies><dependency><groupId>io.kubernetes<\/groupId><artifactId>client-java<\/artifactId><version>9.0.0<\/version><\/dependency>/g' pom.xml > tmp && mv tmp pom.xml
 	docker run -v ~/.m2:/root/.m2 -v `pwd`:/base -w /base maven:3-openjdk-8 \
 		mvn install -DskipTests -Dmaven.javadoc.skip
-	echo "\n/dist" >> .gitignore
+	echo "\n/dist\n/.project\n/.vscode" >> .gitignore
 
+.PHONY: clean
+clean:
+	rm -Rf dist

@@ -148,6 +148,21 @@
         }
       }
     },
+    "io.argoproj.common.Status": {
+      "description": "Status is a common structure which can be used for Status field.",
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "description": "Conditions are the latest available observations of a resource's current state.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.common.Condition"
+          },
+          "x-kubernetes-patch-merge-key": "type",
+          "x-kubernetes-patch-strategy": "merge"
+        }
+      }
+    },
     "io.argoproj.common.TLSConfig": {
       "description": "TLSConfig refers to TLS configuration for a client.",
       "type": "object",
@@ -226,6 +241,33 @@
         },
         "status": {
           "$ref": "#/definitions/io.argoproj.eventbus.v1alpha1.EventBusStatus"
+        }
+      }
+    },
+    "io.argoproj.eventbus.v1alpha1.EventBusList": {
+      "description": "EventBusList is the list of eventbus resources",
+      "type": "object",
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.eventbus.v1alpha1.EventBus"
+          }
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
         }
       }
     },
@@ -552,6 +594,33 @@
         }
       }
     },
+    "io.argoproj.eventsource.v1alpha1.EventSourceList": {
+      "description": "EventSourceList is the list of eventsource resources",
+      "type": "object",
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.EventSource"
+          }
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+        }
+      }
+    },
     "io.argoproj.eventsource.v1alpha1.EventSourceSpec": {
       "description": "EventSourceSpec refers to specification of event-source resource",
       "type": "object",
@@ -680,7 +749,7 @@
           }
         },
         "replica": {
-          "description": "Replica is the gateway deployment replicas",
+          "description": "Replica is the event source deployment replicas",
           "type": "integer",
           "format": "int32"
         },
@@ -1213,8 +1282,6 @@
       "description": "PubSubEventSource refers to event-source for GCP PubSub related events.",
       "type": "object",
       "required": [
-        "projectID",
-        "topicProjectID",
         "credentialsFile"
       ],
       "properties": {
@@ -1242,19 +1309,19 @@
           }
         },
         "projectID": {
-          "description": "ProjectID is the unique identifier for your project on GCP",
+          "description": "ProjectID is GCP project ID for the subscription. Required if you run Argo Events outside of GKE/GCE. (otherwise, the default value is its project)",
           "type": "string"
         },
         "subscriptionID": {
-          "description": "SubscriptionID is given then use it instead of creating a new one",
+          "description": "SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possiblity of event loss.",
           "type": "string"
         },
         "topic": {
-          "description": "Topic on which a subscription will be created",
+          "description": "Topic to which the subscription should belongs. Required if you want the eventsource to create a new subscription. If you specify this field along with an existing subscription, it will be verified whether it actually belongs to the specified topic.",
           "type": "string"
         },
         "topicProjectID": {
-          "description": "TopicProjectID identifies the project where the topic should exist or be created (assumed to be the same as ProjectID by default)",
+          "description": "TopicProjectID is GCP project ID for the the topic. By default, it is same as ProjectID.",
           "type": "string"
         }
       }
@@ -2046,8 +2113,24 @@
         }
       }
     },
+    "io.argoproj.sensor.v1alpha1.Event": {
+      "description": "Event represents the cloudevent received from an event source.",
+      "type": "object",
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "context": {
+          "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.EventContext"
+        },
+        "data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "io.argoproj.sensor.v1alpha1.EventContext": {
-      "description": "EventContext holds the context of the cloudevent received from a gateway.",
+      "description": "EventContext holds the context of the cloudevent received from an event source.",
       "type": "object",
       "required": [
         "id",
@@ -2495,6 +2578,33 @@
         }
       }
     },
+    "io.argoproj.sensor.v1alpha1.SensorList": {
+      "description": "SensorList is the list of Sensor resources",
+      "type": "object",
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.Sensor"
+          }
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+        }
+      }
+    },
     "io.argoproj.sensor.v1alpha1.SensorSpec": {
       "description": "SensorSpec represents desired sensor state",
       "type": "object",
@@ -2644,7 +2754,7 @@
       "type": "object",
       "properties": {
         "container": {
-          "description": "Container is the main container image to run in the gateway pod",
+          "description": "Container is the main container image to run in the sensor pod",
           "$ref": "#/definitions/io.k8s.api.core.v1.Container"
         },
         "metadata": {
@@ -2663,7 +2773,7 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.PodSecurityContext"
         },
         "serviceAccountName": {
-          "description": "ServiceAccountName is the name of the ServiceAccount to use to run gateway pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/",
+          "description": "ServiceAccountName is the name of the ServiceAccount to use to run sensor pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/",
           "type": "string"
         },
         "tolerations": {

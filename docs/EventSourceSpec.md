@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **gitlab** | [**Map&lt;String, GitlabEventSource&gt;**](GitlabEventSource.md) | Gitlab event sources |  [optional]
 **minio** | [**Map&lt;String, io.argoproj.events.models.common.S3Artifact&gt;**](io.argoproj.events.models.common.S3Artifact.md) | Minio event sources |  [optional]
 **kafka** | [**Map&lt;String, KafkaEventSource&gt;**](KafkaEventSource.md) | Kafka event sources |  [optional]
-**replica** | **Integer** | Replica is the gateway deployment replicas |  [optional]
+**replica** | **Integer** | Replica is the event source deployment replicas |  [optional]
 **file** | [**Map&lt;String, FileEventSource&gt;**](FileEventSource.md) | File event sources |  [optional]
 **nsq** | [**Map&lt;String, NSQEventSource&gt;**](NSQEventSource.md) | NSQ event source |  [optional]
 **pulsar** | [**Map&lt;String, PulsarEventSource&gt;**](PulsarEventSource.md) | Pulsar event source |  [optional]
