@@ -74,9 +74,9 @@ Then manually install the following JARs:
 
 Please follow the [installation](#installation) instruction and examples below:
 
-- [EventBus Example](src/main/java.io.argoproj/events/client/examples/EventBusExample.java)
-- [EventSource Example](src/main/java.io.argoproj/events/client/examples/EventSourceExample.java)
-- [Sensor Example](src/main/java.io.argoproj/events/client/examples/SensorExample.java)
+- [EventBus Example](src/main/java/io/argoproj/events/client/examples/EventBusExample.java)
+- [EventSource Example](src/main/java/io/argoproj/events/client/examples/EventSourceExample.java)
+- [Sensor Example](src/main/java/io/argoproj/events/client/examples/SensorExample.java)
 
 ## Documentation for Models
 
