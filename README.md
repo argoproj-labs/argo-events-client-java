@@ -1,4 +1,4 @@
-# argo-events-client-java
+# Argo Events Java Client
 
 Argo Events
 
