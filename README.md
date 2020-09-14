@@ -78,6 +78,10 @@ Please follow the [installation](#installation) instruction and examples below:
 - [EventSource Example](src/main/java/io/argoproj/events/client/examples/EventSourceExample.java)
 - [Sensor Example](src/main/java/io/argoproj/events/client/examples/SensorExample.java)
 
+These examples are runnable in a POD with proper RBAC settings, or on your
+laptop if `${HOME}/.kube/config` is correctly configured (or `${KUBECONFIG}`
+environment variable is pointing to the correct kubeconfig file).
+
 ## Documentation for Models
 
-[Doc](docs)
+[Docs](docs)
