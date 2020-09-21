@@ -184,7 +184,7 @@ build:
 	sed 's/public class Sensor/public class Sensor implements io.kubernetes.client.common.KubernetesObject/g' src/main/java/io/argoproj/events/models/sensor/Sensor.java > tmp && mv tmp src/main/java/io/argoproj/events/models/sensor/Sensor.java
 	sed 's/public class SensorList/public class SensorList implements io.kubernetes.client.common.KubernetesListObject/g' src/main/java/io/argoproj/events/models/sensor/SensorList.java > tmp && mv tmp src/main/java/io/argoproj/events/models/sensor/SensorList.java
 	
-	sed 's/<dependencies>/<dependencies><dependency><groupId>io.kubernetes<\/groupId><artifactId>client-java<\/artifactId><version>9.0.0<\/version><\/dependency>/g' pom.xml > tmp && mv tmp pom.xml
+	sed 's/<dependencies>/<dependencies><dependency><groupId>io.kubernetes<\/groupId><artifactId>client-java<\/artifactId><version>9.0.2<\/version><\/dependency>/g' pom.xml > tmp && mv tmp pom.xml
 	docker run -v ~/.m2:/root/.m2 -v `pwd`:/base -w /base maven:3-openjdk-8 \
 		mvn install -DskipTests -Dmaven.javadoc.skip
 
