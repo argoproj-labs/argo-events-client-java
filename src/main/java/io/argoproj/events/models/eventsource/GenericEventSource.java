@@ -23,6 +23,9 @@ import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GenericEventSource refers to a generic event source. It can be used to implement a custom event source.
@@ -30,30 +33,145 @@ import java.io.IOException;
 @ApiModel(description = "GenericEventSource refers to a generic event source. It can be used to implement a custom event source.")
 
 public class GenericEventSource {
-  public static final String SERIALIZED_NAME_VALUE = "value";
-  @SerializedName(SERIALIZED_NAME_VALUE)
-  private String value;
+  public static final String SERIALIZED_NAME_URL = "url";
+  @SerializedName(SERIALIZED_NAME_URL)
+  private String url;
+
+  public static final String SERIALIZED_NAME_INSECURE = "insecure";
+  @SerializedName(SERIALIZED_NAME_INSECURE)
+  private Boolean insecure;
+
+  public static final String SERIALIZED_NAME_CONFIG = "config";
+  @SerializedName(SERIALIZED_NAME_CONFIG)
+  private String config;
+
+  public static final String SERIALIZED_NAME_JSON_BODY = "jsonBody";
+  @SerializedName(SERIALIZED_NAME_JSON_BODY)
+  private Boolean jsonBody;
+
+  public static final String SERIALIZED_NAME_METADATA = "metadata";
+  @SerializedName(SERIALIZED_NAME_METADATA)
+  private Map<String, String> metadata = null;
 
 
-  public GenericEventSource value(String value) {
+  public GenericEventSource url(String url) {
     
-    this.value = value;
+    this.url = url;
     return this;
   }
 
    /**
-   * Value of the event source
-   * @return value
+   * URL of the gRPC server that implements the event source.
+   * @return url
   **/
-  @ApiModelProperty(required = true, value = "Value of the event source")
+  @ApiModelProperty(required = true, value = "URL of the gRPC server that implements the event source.")
 
-  public String getValue() {
-    return value;
+  public String getUrl() {
+    return url;
   }
 
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+
+  public GenericEventSource insecure(Boolean insecure) {
+    
+    this.insecure = insecure;
+    return this;
+  }
+
+   /**
+   * Insecure determines the type of connection.
+   * @return insecure
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "Insecure determines the type of connection.")
+
+  public Boolean getInsecure() {
+    return insecure;
+  }
+
+
+  public void setInsecure(Boolean insecure) {
+    this.insecure = insecure;
+  }
+
+
+  public GenericEventSource config(String config) {
+    
+    this.config = config;
+    return this;
+  }
+
+   /**
+   * Config is the event source configuration
+   * @return config
+  **/
+  @ApiModelProperty(required = true, value = "Config is the event source configuration")
+
+  public String getConfig() {
+    return config;
+  }
+
+
+  public void setConfig(String config) {
+    this.config = config;
+  }
+
+
+  public GenericEventSource jsonBody(Boolean jsonBody) {
+    
+    this.jsonBody = jsonBody;
+    return this;
+  }
+
+   /**
+   * JSONBody specifies that all event body payload coming from this source will be JSON
+   * @return jsonBody
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "JSONBody specifies that all event body payload coming from this source will be JSON")
+
+  public Boolean getJsonBody() {
+    return jsonBody;
+  }
+
+
+  public void setJsonBody(Boolean jsonBody) {
+    this.jsonBody = jsonBody;
+  }
+
+
+  public GenericEventSource metadata(Map<String, String> metadata) {
+    
+    this.metadata = metadata;
+    return this;
+  }
+
+  public GenericEventSource putMetadataItem(String key, String metadataItem) {
+    if (this.metadata == null) {
+      this.metadata = new HashMap<String, String>();
+    }
+    this.metadata.put(key, metadataItem);
+    return this;
+  }
+
+   /**
+   * Metadata holds the user defined metadata which will passed along the event payload.
+   * @return metadata
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "Metadata holds the user defined metadata which will passed along the event payload.")
+
+  public Map<String, String> getMetadata() {
+    return metadata;
+  }
+
+
+  public void setMetadata(Map<String, String> metadata) {
+    this.metadata = metadata;
   }
 
 
@@ -66,12 +184,16 @@ public class GenericEventSource {
       return false;
     }
     GenericEventSource genericEventSource = (GenericEventSource) o;
-    return Objects.equals(this.value, genericEventSource.value);
+    return Objects.equals(this.url, genericEventSource.url) &&
+        Objects.equals(this.insecure, genericEventSource.insecure) &&
+        Objects.equals(this.config, genericEventSource.config) &&
+        Objects.equals(this.jsonBody, genericEventSource.jsonBody) &&
+        Objects.equals(this.metadata, genericEventSource.metadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value);
+    return Objects.hash(url, insecure, config, jsonBody, metadata);
   }
 
 
@@ -79,7 +201,11 @@ public class GenericEventSource {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class GenericEventSource {\n");
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    url: ").append(toIndentedString(url)).append("\n");
+    sb.append("    insecure: ").append(toIndentedString(insecure)).append("\n");
+    sb.append("    config: ").append(toIndentedString(config)).append("\n");
+    sb.append("    jsonBody: ").append(toIndentedString(jsonBody)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

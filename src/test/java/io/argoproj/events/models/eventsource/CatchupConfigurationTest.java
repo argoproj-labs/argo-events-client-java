@@ -21,42 +21,39 @@ import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 
 /**
- * Model tests for Metadata
+ * Model tests for CatchupConfiguration
  */
-public class MetadataTest {
-    private final Metadata model = new Metadata();
+public class CatchupConfigurationTest {
+    private final CatchupConfiguration model = new CatchupConfiguration();
 
     /**
-     * Model tests for Metadata
+     * Model tests for CatchupConfiguration
      */
     @Test
-    public void testMetadata() {
-        // TODO: test Metadata
+    public void testCatchupConfiguration() {
+        // TODO: test CatchupConfiguration
     }
 
     /**
-     * Test the property 'labels'
+     * Test the property 'enabled'
      */
     @Test
-    public void labelsTest() {
-        // TODO: test labels
+    public void enabledTest() {
+        // TODO: test enabled
     }
 
     /**
-     * Test the property 'annotations'
+     * Test the property 'maxDuration'
      */
     @Test
-    public void annotationsTest() {
-        // TODO: test annotations
+    public void maxDurationTest() {
+        // TODO: test maxDuration
     }
 
 }

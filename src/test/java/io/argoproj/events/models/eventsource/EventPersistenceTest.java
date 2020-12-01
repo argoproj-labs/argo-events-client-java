@@ -11,52 +11,51 @@
  */
 
 
-package io.argoproj.events.models.sensor;
+package io.argoproj.events.models.eventsource;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.argoproj.events.models.eventsource.CatchupConfiguration;
+import io.argoproj.events.models.eventsource.ConfigMapPersistence;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 
 /**
- * Model tests for Metadata
+ * Model tests for EventPersistence
  */
-public class MetadataTest {
-    private final Metadata model = new Metadata();
+public class EventPersistenceTest {
+    private final EventPersistence model = new EventPersistence();
 
     /**
-     * Model tests for Metadata
+     * Model tests for EventPersistence
      */
     @Test
-    public void testMetadata() {
-        // TODO: test Metadata
+    public void testEventPersistence() {
+        // TODO: test EventPersistence
     }
 
     /**
-     * Test the property 'labels'
+     * Test the property 'catchup'
      */
     @Test
-    public void labelsTest() {
-        // TODO: test labels
+    public void catchupTest() {
+        // TODO: test catchup
     }
 
     /**
-     * Test the property 'annotations'
+     * Test the property 'configMap'
      */
     @Test
-    public void annotationsTest() {
-        // TODO: test annotations
+    public void configMapTest() {
+        // TODO: test configMap
     }
 
 }

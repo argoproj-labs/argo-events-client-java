@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **container** | [**V1Container**](V1Container.md) |  |  [optional]
 **volumes** | [**List&lt;V1Volume&gt;**](V1Volume.md) | Volumes is a list of volumes that can be mounted by containers in a workflow. |  [optional]
 **tolerations** | [**List&lt;V1Toleration&gt;**](V1Toleration.md) | If specified, the pod&#39;s tolerations. |  [optional]
-**metadata** | [**Metadata**](Metadata.md) |  |  [optional]
+**metadata** | [**io.argoproj.events.models.common.Metadata**](io.argoproj.events.models.common.Metadata.md) |  |  [optional]
 
 
 

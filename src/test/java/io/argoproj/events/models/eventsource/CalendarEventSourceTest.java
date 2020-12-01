@@ -18,6 +18,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.argoproj.events.models.eventsource.EventPersistence;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
@@ -82,6 +83,14 @@ public class CalendarEventSourceTest {
     @Test
     public void exclusionDatesTest() {
         // TODO: test exclusionDates
+    }
+
+    /**
+     * Test the property 'persistence'
+     */
+    @Test
+    public void persistenceTest() {
+        // TODO: test persistence
     }
 
     /**

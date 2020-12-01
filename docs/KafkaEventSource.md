@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]
 **partition** | **String** | Partition name | 
 **topic** | **String** | Topic name | 
-**url** | **String** | URL to kafka cluster | 
+**url** | **String** | URL to kafka cluster, multiple URLs separated by comma | 
 **version** | **String** | Specify what kafka version is being connected to enables certain features in sarama, defaults to 1.0.0 |  [optional]
 **limitEventsPerSecond** | **Long** | Sets a limit on how many events get read from kafka per second. |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | Metadata holds the user defined metadata which will passed along the event payload. |  [optional]

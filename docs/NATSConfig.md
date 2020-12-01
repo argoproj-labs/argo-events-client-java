@@ -7,9 +7,9 @@ NATSConfig holds the config of NATS
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**url** | **String** | NATS host url |  [optional]
+**url** | **String** | NATS streaming url |  [optional]
 **accessSecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
-**clusterID** | **String** | Cluster ID for nats streaming, if it&#39;s missing, treat it as NATS server |  [optional]
+**clusterID** | **String** | Cluster ID for nats streaming |  [optional]
 **auth** | **String** | Auth strategy, default to AuthStrategyNone |  [optional]
 
 

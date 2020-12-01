@@ -11,62 +11,49 @@
  */
 
 
-package io.argoproj.events.models.sensor;
+package io.argoproj.events.models.eventsource;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.argoproj.events.models.sensor.DataFilter;
-import io.argoproj.events.models.sensor.EventContext;
-import io.argoproj.events.models.sensor.TimeFilter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 
 /**
- * Model tests for EventDependencyFilter
+ * Model tests for ConfigMapPersistence
  */
-public class EventDependencyFilterTest {
-    private final EventDependencyFilter model = new EventDependencyFilter();
+public class ConfigMapPersistenceTest {
+    private final ConfigMapPersistence model = new ConfigMapPersistence();
 
     /**
-     * Model tests for EventDependencyFilter
+     * Model tests for ConfigMapPersistence
      */
     @Test
-    public void testEventDependencyFilter() {
-        // TODO: test EventDependencyFilter
+    public void testConfigMapPersistence() {
+        // TODO: test ConfigMapPersistence
     }
 
     /**
-     * Test the property 'data'
+     * Test the property 'createIfNotExist'
      */
     @Test
-    public void dataTest() {
-        // TODO: test data
+    public void createIfNotExistTest() {
+        // TODO: test createIfNotExist
     }
 
     /**
-     * Test the property 'context'
+     * Test the property 'name'
      */
     @Test
-    public void contextTest() {
-        // TODO: test context
-    }
-
-    /**
-     * Test the property 'time'
-     */
-    @Test
-    public void timeTest() {
-        // TODO: test time
+    public void nameTest() {
+        // TODO: test name
     }
 
 }

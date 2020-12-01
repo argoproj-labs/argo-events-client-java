@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **timezone** | **String** | Timezone in which to run the schedule |  [optional]
 **userPayload** | **byte[]** | UserPayload will be sent to sensor as extra data once the event is triggered Deprecated. Please use Metadata instead. |  [optional]
 **exclusionDates** | **List&lt;String&gt;** |  |  [optional]
+**persistence** | [**EventPersistence**](EventPersistence.md) |  |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | Metadata holds the user defined metadata which will passed along the event payload. |  [optional]
 
 

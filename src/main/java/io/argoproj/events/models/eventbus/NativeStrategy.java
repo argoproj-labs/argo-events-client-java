@@ -22,6 +22,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import io.argoproj.events.models.eventbus.ContainerTemplate;
 import io.argoproj.events.models.eventbus.PersistenceStrategy;
+import io.kubernetes.client.openapi.models.V1PodSecurityContext;
 import io.kubernetes.client.openapi.models.V1Toleration;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,21 +42,29 @@ public class NativeStrategy {
   @SerializedName(SERIALIZED_NAME_ANTI_AFFINITY)
   private Boolean antiAffinity;
 
+  public static final String SERIALIZED_NAME_SECURITY_CONTEXT = "securityContext";
+  @SerializedName(SERIALIZED_NAME_SECURITY_CONTEXT)
+  private V1PodSecurityContext securityContext = null;
+
   public static final String SERIALIZED_NAME_REPLICAS = "replicas";
   @SerializedName(SERIALIZED_NAME_REPLICAS)
   private Integer replicas;
 
-  public static final String SERIALIZED_NAME_AUTH = "auth";
-  @SerializedName(SERIALIZED_NAME_AUTH)
-  private String auth;
+  public static final String SERIALIZED_NAME_MAX_AGE = "maxAge";
+  @SerializedName(SERIALIZED_NAME_MAX_AGE)
+  private String maxAge;
+
+  public static final String SERIALIZED_NAME_METRICS_CONTAINER_TEMPLATE = "metricsContainerTemplate";
+  @SerializedName(SERIALIZED_NAME_METRICS_CONTAINER_TEMPLATE)
+  private ContainerTemplate metricsContainerTemplate;
 
   public static final String SERIALIZED_NAME_NODE_SELECTOR = "nodeSelector";
   @SerializedName(SERIALIZED_NAME_NODE_SELECTOR)
   private Map<String, String> nodeSelector = null;
 
-  public static final String SERIALIZED_NAME_METRICS_CONTAINER_TEMPLATE = "metricsContainerTemplate";
-  @SerializedName(SERIALIZED_NAME_METRICS_CONTAINER_TEMPLATE)
-  private ContainerTemplate metricsContainerTemplate;
+  public static final String SERIALIZED_NAME_AUTH = "auth";
+  @SerializedName(SERIALIZED_NAME_AUTH)
+  private String auth;
 
   public static final String SERIALIZED_NAME_CONTAINER_TEMPLATE = "containerTemplate";
   @SerializedName(SERIALIZED_NAME_CONTAINER_TEMPLATE)
@@ -68,6 +77,10 @@ public class NativeStrategy {
   public static final String SERIALIZED_NAME_PERSISTENCE = "persistence";
   @SerializedName(SERIALIZED_NAME_PERSISTENCE)
   private PersistenceStrategy persistence;
+
+  public static final String SERIALIZED_NAME_METADATA = "metadata";
+  @SerializedName(SERIALIZED_NAME_METADATA)
+  private io.argoproj.events.models.common.Metadata metadata = null;
 
 
   public NativeStrategy antiAffinity(Boolean antiAffinity) {
@@ -90,6 +103,29 @@ public class NativeStrategy {
 
   public void setAntiAffinity(Boolean antiAffinity) {
     this.antiAffinity = antiAffinity;
+  }
+
+
+  public NativeStrategy securityContext(V1PodSecurityContext securityContext) {
+    
+    this.securityContext = securityContext;
+    return this;
+  }
+
+   /**
+   * Get securityContext
+   * @return securityContext
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public V1PodSecurityContext getSecurityContext() {
+    return securityContext;
+  }
+
+
+  public void setSecurityContext(V1PodSecurityContext securityContext) {
+    this.securityContext = securityContext;
   }
 
 
@@ -116,26 +152,49 @@ public class NativeStrategy {
   }
 
 
-  public NativeStrategy auth(String auth) {
+  public NativeStrategy maxAge(String maxAge) {
     
-    this.auth = auth;
+    this.maxAge = maxAge;
     return this;
   }
 
    /**
-   * Get auth
-   * @return auth
+   * Max Age of existing messages, i.e. \&quot;72h\&quot;, “4h35m”
+   * @return maxAge
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "Max Age of existing messages, i.e. \"72h\", “4h35m”")
+
+  public String getMaxAge() {
+    return maxAge;
+  }
+
+
+  public void setMaxAge(String maxAge) {
+    this.maxAge = maxAge;
+  }
+
+
+  public NativeStrategy metricsContainerTemplate(ContainerTemplate metricsContainerTemplate) {
+    
+    this.metricsContainerTemplate = metricsContainerTemplate;
+    return this;
+  }
+
+   /**
+   * Get metricsContainerTemplate
+   * @return metricsContainerTemplate
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public String getAuth() {
-    return auth;
+  public ContainerTemplate getMetricsContainerTemplate() {
+    return metricsContainerTemplate;
   }
 
 
-  public void setAuth(String auth) {
-    this.auth = auth;
+  public void setMetricsContainerTemplate(ContainerTemplate metricsContainerTemplate) {
+    this.metricsContainerTemplate = metricsContainerTemplate;
   }
 
 
@@ -170,26 +229,26 @@ public class NativeStrategy {
   }
 
 
-  public NativeStrategy metricsContainerTemplate(ContainerTemplate metricsContainerTemplate) {
+  public NativeStrategy auth(String auth) {
     
-    this.metricsContainerTemplate = metricsContainerTemplate;
+    this.auth = auth;
     return this;
   }
 
    /**
-   * Get metricsContainerTemplate
-   * @return metricsContainerTemplate
+   * Get auth
+   * @return auth
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public ContainerTemplate getMetricsContainerTemplate() {
-    return metricsContainerTemplate;
+  public String getAuth() {
+    return auth;
   }
 
 
-  public void setMetricsContainerTemplate(ContainerTemplate metricsContainerTemplate) {
-    this.metricsContainerTemplate = metricsContainerTemplate;
+  public void setAuth(String auth) {
+    this.auth = auth;
   }
 
 
@@ -270,6 +329,29 @@ public class NativeStrategy {
   }
 
 
+  public NativeStrategy metadata(io.argoproj.events.models.common.Metadata metadata) {
+    
+    this.metadata = metadata;
+    return this;
+  }
+
+   /**
+   * Get metadata
+   * @return metadata
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public io.argoproj.events.models.common.Metadata getMetadata() {
+    return metadata;
+  }
+
+
+  public void setMetadata(io.argoproj.events.models.common.Metadata metadata) {
+    this.metadata = metadata;
+  }
+
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -280,18 +362,21 @@ public class NativeStrategy {
     }
     NativeStrategy nativeStrategy = (NativeStrategy) o;
     return Objects.equals(this.antiAffinity, nativeStrategy.antiAffinity) &&
+        Objects.equals(this.securityContext, nativeStrategy.securityContext) &&
         Objects.equals(this.replicas, nativeStrategy.replicas) &&
-        Objects.equals(this.auth, nativeStrategy.auth) &&
-        Objects.equals(this.nodeSelector, nativeStrategy.nodeSelector) &&
+        Objects.equals(this.maxAge, nativeStrategy.maxAge) &&
         Objects.equals(this.metricsContainerTemplate, nativeStrategy.metricsContainerTemplate) &&
+        Objects.equals(this.nodeSelector, nativeStrategy.nodeSelector) &&
+        Objects.equals(this.auth, nativeStrategy.auth) &&
         Objects.equals(this.containerTemplate, nativeStrategy.containerTemplate) &&
         Objects.equals(this.tolerations, nativeStrategy.tolerations) &&
-        Objects.equals(this.persistence, nativeStrategy.persistence);
+        Objects.equals(this.persistence, nativeStrategy.persistence) &&
+        Objects.equals(this.metadata, nativeStrategy.metadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(antiAffinity, replicas, auth, nodeSelector, metricsContainerTemplate, containerTemplate, tolerations, persistence);
+    return Objects.hash(antiAffinity, securityContext, replicas, maxAge, metricsContainerTemplate, nodeSelector, auth, containerTemplate, tolerations, persistence, metadata);
   }
 
 
@@ -300,13 +385,16 @@ public class NativeStrategy {
     StringBuilder sb = new StringBuilder();
     sb.append("class NativeStrategy {\n");
     sb.append("    antiAffinity: ").append(toIndentedString(antiAffinity)).append("\n");
+    sb.append("    securityContext: ").append(toIndentedString(securityContext)).append("\n");
     sb.append("    replicas: ").append(toIndentedString(replicas)).append("\n");
-    sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
-    sb.append("    nodeSelector: ").append(toIndentedString(nodeSelector)).append("\n");
+    sb.append("    maxAge: ").append(toIndentedString(maxAge)).append("\n");
     sb.append("    metricsContainerTemplate: ").append(toIndentedString(metricsContainerTemplate)).append("\n");
+    sb.append("    nodeSelector: ").append(toIndentedString(nodeSelector)).append("\n");
+    sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("    containerTemplate: ").append(toIndentedString(containerTemplate)).append("\n");
     sb.append("    tolerations: ").append(toIndentedString(tolerations)).append("\n");
     sb.append("    persistence: ").append(toIndentedString(persistence)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

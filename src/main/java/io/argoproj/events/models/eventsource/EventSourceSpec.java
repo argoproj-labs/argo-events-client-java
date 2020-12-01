@@ -782,11 +782,11 @@ public class EventSourceSpec {
   }
 
    /**
-   * PubSub eevnt sources
+   * PubSub event sources
    * @return pubSub
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "PubSub eevnt sources")
+  @ApiModelProperty(value = "PubSub event sources")
 
   public Map<String, PubSubEventSource> getPubSub() {
     return pubSub;

@@ -27,7 +27,7 @@ Name | Type | Description | Notes
 **azureEventsHub** | [**Map&lt;String, AzureEventsHubEventSource&gt;**](AzureEventsHubEventSource.md) | AzureEventsHub event sources |  [optional]
 **sns** | [**Map&lt;String, SNSEventSource&gt;**](SNSEventSource.md) | SNS event sources |  [optional]
 **emitter** | [**Map&lt;String, EmitterEventSource&gt;**](EmitterEventSource.md) | Emitter event source |  [optional]
-**pubSub** | [**Map&lt;String, PubSubEventSource&gt;**](PubSubEventSource.md) | PubSub eevnt sources |  [optional]
+**pubSub** | [**Map&lt;String, PubSubEventSource&gt;**](PubSubEventSource.md) | PubSub event sources |  [optional]
 **github** | [**Map&lt;String, GithubEventSource&gt;**](GithubEventSource.md) | Github event sources |  [optional]
 **resource** | [**Map&lt;String, ResourceEventSource&gt;**](ResourceEventSource.md) | Resource event sources |  [optional]
 **slack** | [**Map&lt;String, SlackEventSource&gt;**](SlackEventSource.md) | Slack event sources |  [optional]

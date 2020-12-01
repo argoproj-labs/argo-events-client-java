@@ -20,6 +20,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import io.argoproj.events.models.eventbus.ContainerTemplate;
 import io.argoproj.events.models.eventbus.PersistenceStrategy;
+import io.kubernetes.client.openapi.models.V1PodSecurityContext;
 import io.kubernetes.client.openapi.models.V1Toleration;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -56,6 +57,14 @@ public class NativeStrategyTest {
     }
 
     /**
+     * Test the property 'securityContext'
+     */
+    @Test
+    public void securityContextTest() {
+        // TODO: test securityContext
+    }
+
+    /**
      * Test the property 'replicas'
      */
     @Test
@@ -64,11 +73,19 @@ public class NativeStrategyTest {
     }
 
     /**
-     * Test the property 'auth'
+     * Test the property 'maxAge'
      */
     @Test
-    public void authTest() {
-        // TODO: test auth
+    public void maxAgeTest() {
+        // TODO: test maxAge
+    }
+
+    /**
+     * Test the property 'metricsContainerTemplate'
+     */
+    @Test
+    public void metricsContainerTemplateTest() {
+        // TODO: test metricsContainerTemplate
     }
 
     /**
@@ -80,11 +97,11 @@ public class NativeStrategyTest {
     }
 
     /**
-     * Test the property 'metricsContainerTemplate'
+     * Test the property 'auth'
      */
     @Test
-    public void metricsContainerTemplateTest() {
-        // TODO: test metricsContainerTemplate
+    public void authTest() {
+        // TODO: test auth
     }
 
     /**
@@ -109,6 +126,14 @@ public class NativeStrategyTest {
     @Test
     public void persistenceTest() {
         // TODO: test persistence
+    }
+
+    /**
+     * Test the property 'metadata'
+     */
+    @Test
+    public void metadataTest() {
+        // TODO: test metadata
     }
 
 }

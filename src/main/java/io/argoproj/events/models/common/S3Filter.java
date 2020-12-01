@@ -25,9 +25,9 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * S3Filter represents filters to apply to bucket nofifications for specifying constraints on objects
+ * S3Filter represents filters to apply to bucket notifications for specifying constraints on objects
  */
-@ApiModel(description = "S3Filter represents filters to apply to bucket nofifications for specifying constraints on objects")
+@ApiModel(description = "S3Filter represents filters to apply to bucket notifications for specifying constraints on objects")
 
 public class S3Filter {
   public static final String SERIALIZED_NAME_PREFIX = "prefix";

@@ -218,10 +218,10 @@ public class KafkaEventSource {
   }
 
    /**
-   * URL to kafka cluster
+   * URL to kafka cluster, multiple URLs separated by comma
    * @return url
   **/
-  @ApiModelProperty(required = true, value = "URL to kafka cluster")
+  @ApiModelProperty(required = true, value = "URL to kafka cluster, multiple URLs separated by comma")
 
   public String getUrl() {
     return url;

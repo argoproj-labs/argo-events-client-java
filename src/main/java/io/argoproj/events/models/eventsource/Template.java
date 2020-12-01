@@ -20,7 +20,6 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.argoproj.events.models.eventsource.Metadata;
 import io.kubernetes.client.openapi.models.V1Affinity;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1PodSecurityContext;
@@ -70,7 +69,7 @@ public class Template {
 
   public static final String SERIALIZED_NAME_METADATA = "metadata";
   @SerializedName(SERIALIZED_NAME_METADATA)
-  private Metadata metadata;
+  private io.argoproj.events.models.common.Metadata metadata = null;
 
 
   public Template container(V1Container container) {
@@ -188,11 +187,11 @@ public class Template {
   }
 
    /**
-   * Volumes is a list of volumes that can be mounted by containers in a workflow.
+   * Volumes is a list of volumes that can be mounted by containers in an eventsource.
    * @return volumes
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Volumes is a list of volumes that can be mounted by containers in a workflow.")
+  @ApiModelProperty(value = "Volumes is a list of volumes that can be mounted by containers in an eventsource.")
 
   public List<V1Volume> getVolumes() {
     return volumes;
@@ -258,7 +257,7 @@ public class Template {
   }
 
 
-  public Template metadata(Metadata metadata) {
+  public Template metadata(io.argoproj.events.models.common.Metadata metadata) {
     
     this.metadata = metadata;
     return this;
@@ -271,12 +270,12 @@ public class Template {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public Metadata getMetadata() {
+  public io.argoproj.events.models.common.Metadata getMetadata() {
     return metadata;
   }
 
 
-  public void setMetadata(Metadata metadata) {
+  public void setMetadata(io.argoproj.events.models.common.Metadata metadata) {
     this.metadata = metadata;
   }
 

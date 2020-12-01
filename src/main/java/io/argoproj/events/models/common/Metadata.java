@@ -11,7 +11,7 @@
  */
 
 
-package io.argoproj.events.models.sensor;
+package io.argoproj.events.models.common;
 
 import java.util.Objects;
 import java.util.Arrays;

@@ -20,6 +20,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.argoproj.events.models.eventsource.EventPersistence;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
@@ -53,6 +54,10 @@ public class CalendarEventSource {
   public static final String SERIALIZED_NAME_EXCLUSION_DATES = "exclusionDates";
   @SerializedName(SERIALIZED_NAME_EXCLUSION_DATES)
   private List<String> exclusionDates = null;
+
+  public static final String SERIALIZED_NAME_PERSISTENCE = "persistence";
+  @SerializedName(SERIALIZED_NAME_PERSISTENCE)
+  private EventPersistence persistence;
 
   public static final String SERIALIZED_NAME_METADATA = "metadata";
   @SerializedName(SERIALIZED_NAME_METADATA)
@@ -180,6 +185,29 @@ public class CalendarEventSource {
   }
 
 
+  public CalendarEventSource persistence(EventPersistence persistence) {
+    
+    this.persistence = persistence;
+    return this;
+  }
+
+   /**
+   * Get persistence
+   * @return persistence
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public EventPersistence getPersistence() {
+    return persistence;
+  }
+
+
+  public void setPersistence(EventPersistence persistence) {
+    this.persistence = persistence;
+  }
+
+
   public CalendarEventSource metadata(Map<String, String> metadata) {
     
     this.metadata = metadata;
@@ -225,12 +253,13 @@ public class CalendarEventSource {
         Objects.equals(this.timezone, calendarEventSource.timezone) &&
         Arrays.equals(this.userPayload, calendarEventSource.userPayload) &&
         Objects.equals(this.exclusionDates, calendarEventSource.exclusionDates) &&
+        Objects.equals(this.persistence, calendarEventSource.persistence) &&
         Objects.equals(this.metadata, calendarEventSource.metadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(schedule, interval, timezone, Arrays.hashCode(userPayload), exclusionDates, metadata);
+    return Objects.hash(schedule, interval, timezone, Arrays.hashCode(userPayload), exclusionDates, persistence, metadata);
   }
 
 
@@ -243,6 +272,7 @@ public class CalendarEventSource {
     sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
     sb.append("    userPayload: ").append(toIndentedString(userPayload)).append("\n");
     sb.append("    exclusionDates: ").append(toIndentedString(exclusionDates)).append("\n");
+    sb.append("    persistence: ").append(toIndentedString(persistence)).append("\n");
     sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("}");
     return sb.toString();

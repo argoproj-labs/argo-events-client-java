@@ -1,4 +1,4 @@
-VERSION := v1.0.0
+VERSION := v1.1.0
 
 GENERATOR_VERSION := v4.3.1
 
@@ -6,7 +6,7 @@ GENERATOR_VERSION := v4.3.1
 .PHONY: build
 build:
 	rm -Rf ./docs ./src/test ./src/main/java/io/argoproj/events/models pom.xml
-	#curl -L -o swagger.json https://raw.githubusercontent.com/argoproj/argo-events/$(VERSION)/api/openapi-spec/swagger.json
+	curl -L -o swagger.json https://raw.githubusercontent.com/argoproj/argo-events/$(VERSION)/api/openapi-spec/swagger.json
 	mkdir -p ./dist
 	cat swagger.json | ./hack/swaggerfilter.py io.argoproj.common | sed 's/io.argoproj.common.//' | sed 's/io.k8s.api.core.//' | sed 's/io.k8s.apimachinery.pkg.apis.meta.//' > dist/common.swagger.json
 	cat swagger.json | ./hack/swaggerfilter.py io.argoproj.eventbus.v1alpha1 | sed 's/io.argoproj.common.//' | sed 's/io.argoproj.eventbus.v1alpha1.//' | sed 's/io.k8s.api.core.//' | sed 's/io.k8s.apimachinery.pkg.apis.meta.//' | sed 's/io.k8s.apimachinery.pkg.api.resource./resource./'  > dist/eventbus.swagger.json
@@ -79,6 +79,7 @@ build:
 		--import-mappings ResourceQuantity=io.kubernetes.client.custom.Quantity \
 		--type-mappings ResourceQuantity=io.kubernetes.client.custom.Quantity \
 		--import-mappings Condition=io.argoproj.events.models.common.Condition \
+		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
 		--generate-alias-as-model
 
 	# event source
@@ -127,6 +128,7 @@ build:
 		--import-mappings TLSConfig=io.argoproj.events.models.common.TLSConfig \
 		--import-mappings Backoff=io.argoproj.events.models.common.Backoff \
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
+		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
 		--generate-alias-as-model
 	
 	# sensor
@@ -174,6 +176,7 @@ build:
 		--import-mappings TLSConfig=io.argoproj.events.models.common.TLSConfig \
 		--import-mappings Backoff=io.argoproj.events.models.common.Backoff \
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
+		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
 		--import-mappings Resource=java.lang.Object \
 		--generate-alias-as-model
 	

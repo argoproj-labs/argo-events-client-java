@@ -39,10 +39,6 @@ public class EventDependencyFilter {
   @SerializedName(SERIALIZED_NAME_DATA)
   private List<DataFilter> data = null;
 
-  public static final String SERIALIZED_NAME_NAME = "name";
-  @SerializedName(SERIALIZED_NAME_NAME)
-  private String name;
-
   public static final String SERIALIZED_NAME_CONTEXT = "context";
   @SerializedName(SERIALIZED_NAME_CONTEXT)
   private EventContext context;
@@ -80,28 +76,6 @@ public class EventDependencyFilter {
 
   public void setData(List<DataFilter> data) {
     this.data = data;
-  }
-
-
-  public EventDependencyFilter name(String name) {
-    
-    this.name = name;
-    return this;
-  }
-
-   /**
-   * Name is the name of event filter
-   * @return name
-  **/
-  @ApiModelProperty(required = true, value = "Name is the name of event filter")
-
-  public String getName() {
-    return name;
-  }
-
-
-  public void setName(String name) {
-    this.name = name;
   }
 
 
@@ -161,14 +135,13 @@ public class EventDependencyFilter {
     }
     EventDependencyFilter eventDependencyFilter = (EventDependencyFilter) o;
     return Objects.equals(this.data, eventDependencyFilter.data) &&
-        Objects.equals(this.name, eventDependencyFilter.name) &&
         Objects.equals(this.context, eventDependencyFilter.context) &&
         Objects.equals(this.time, eventDependencyFilter.time);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(data, name, context, time);
+    return Objects.hash(data, context, time);
   }
 
 
@@ -177,7 +150,6 @@ public class EventDependencyFilter {
     StringBuilder sb = new StringBuilder();
     sb.append("class EventDependencyFilter {\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    context: ").append(toIndentedString(context)).append("\n");
     sb.append("    time: ").append(toIndentedString(time)).append("\n");
     sb.append("}");

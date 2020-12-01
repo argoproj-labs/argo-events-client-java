@@ -21,6 +21,9 @@ import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,11 +44,43 @@ public class GenericEventSourceTest {
     }
 
     /**
-     * Test the property 'value'
+     * Test the property 'url'
      */
     @Test
-    public void valueTest() {
-        // TODO: test value
+    public void urlTest() {
+        // TODO: test url
+    }
+
+    /**
+     * Test the property 'insecure'
+     */
+    @Test
+    public void insecureTest() {
+        // TODO: test insecure
+    }
+
+    /**
+     * Test the property 'config'
+     */
+    @Test
+    public void configTest() {
+        // TODO: test config
+    }
+
+    /**
+     * Test the property 'jsonBody'
+     */
+    @Test
+    public void jsonBodyTest() {
+        // TODO: test jsonBody
+    }
+
+    /**
+     * Test the property 'metadata'
+     */
+    @Test
+    public void metadataTest() {
+        // TODO: test metadata
     }
 
 }

@@ -20,7 +20,6 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.argoproj.events.models.sensor.Metadata;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1PodSecurityContext;
 import io.kubernetes.client.openapi.models.V1Toleration;
@@ -65,7 +64,7 @@ public class Template {
 
   public static final String SERIALIZED_NAME_METADATA = "metadata";
   @SerializedName(SERIALIZED_NAME_METADATA)
-  private Metadata metadata;
+  private io.argoproj.events.models.common.Metadata metadata = null;
 
 
   public Template securityContext(V1PodSecurityContext securityContext) {
@@ -230,7 +229,7 @@ public class Template {
   }
 
 
-  public Template metadata(Metadata metadata) {
+  public Template metadata(io.argoproj.events.models.common.Metadata metadata) {
     
     this.metadata = metadata;
     return this;
@@ -243,12 +242,12 @@ public class Template {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public Metadata getMetadata() {
+  public io.argoproj.events.models.common.Metadata getMetadata() {
     return metadata;
   }
 
 
-  public void setMetadata(Metadata metadata) {
+  public void setMetadata(io.argoproj.events.models.common.Metadata metadata) {
     this.metadata = metadata;
   }
 

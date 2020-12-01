@@ -55,11 +55,11 @@ public class NATSConfig {
   }
 
    /**
-   * NATS host url
+   * NATS streaming url
    * @return url
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "NATS host url")
+  @ApiModelProperty(value = "NATS streaming url")
 
   public String getUrl() {
     return url;
@@ -101,11 +101,11 @@ public class NATSConfig {
   }
 
    /**
-   * Cluster ID for nats streaming, if it&#39;s missing, treat it as NATS server
+   * Cluster ID for nats streaming
    * @return clusterID
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Cluster ID for nats streaming, if it's missing, treat it as NATS server")
+  @ApiModelProperty(value = "Cluster ID for nats streaming")
 
   public String getClusterID() {
     return clusterID;

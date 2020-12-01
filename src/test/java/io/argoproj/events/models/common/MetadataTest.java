@@ -11,62 +11,52 @@
  */
 
 
-package io.argoproj.events.models.sensor;
+package io.argoproj.events.models.common;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.argoproj.events.models.sensor.DataFilter;
-import io.argoproj.events.models.sensor.EventContext;
-import io.argoproj.events.models.sensor.TimeFilter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 
 /**
- * Model tests for EventDependencyFilter
+ * Model tests for Metadata
  */
-public class EventDependencyFilterTest {
-    private final EventDependencyFilter model = new EventDependencyFilter();
+public class MetadataTest {
+    private final Metadata model = new Metadata();
 
     /**
-     * Model tests for EventDependencyFilter
+     * Model tests for Metadata
      */
     @Test
-    public void testEventDependencyFilter() {
-        // TODO: test EventDependencyFilter
+    public void testMetadata() {
+        // TODO: test Metadata
     }
 
     /**
-     * Test the property 'data'
+     * Test the property 'labels'
      */
     @Test
-    public void dataTest() {
-        // TODO: test data
+    public void labelsTest() {
+        // TODO: test labels
     }
 
     /**
-     * Test the property 'context'
+     * Test the property 'annotations'
      */
     @Test
-    public void contextTest() {
-        // TODO: test context
-    }
-
-    /**
-     * Test the property 'time'
-     */
-    @Test
-    public void timeTest() {
-        // TODO: test time
+    public void annotationsTest() {
+        // TODO: test annotations
     }
 
 }

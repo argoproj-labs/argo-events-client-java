@@ -68,6 +68,24 @@
         }
       }
     },
+    "io.argoproj.common.Metadata": {
+      "description": "Metadata holds the annotations and labels of an event source pod",
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "io.argoproj.common.Resource": {
       "description": "Resource represent arbitrary structured data.",
       "type": "object"
@@ -133,7 +151,7 @@
       }
     },
     "io.argoproj.common.S3Filter": {
-      "description": "S3Filter represents filters to apply to bucket nofifications for specifying constraints on objects",
+      "description": "S3Filter represents filters to apply to bucket notifications for specifying constraints on objects",
       "type": "object",
       "required": [
         "prefix",
@@ -327,11 +345,11 @@
           "type": "string"
         },
         "clusterID": {
-          "description": "Cluster ID for nats streaming, if it's missing, treat it as NATS server",
+          "description": "Cluster ID for nats streaming",
           "type": "string"
         },
         "url": {
-          "description": "NATS host url",
+          "description": "NATS streaming url",
           "type": "string"
         }
       }
@@ -349,6 +367,14 @@
         "containerTemplate": {
           "description": "ContainerTemplate contains customized spec for NATS container",
           "$ref": "#/definitions/io.argoproj.eventbus.v1alpha1.ContainerTemplate"
+        },
+        "maxAge": {
+          "description": "Max Age of existing messages, i.e. \"72h\", “4h35m”",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Metadata sets the pods's metadata, i.e. annotations and labels",
+          "$ref": "#/definitions/io.argoproj.common.Metadata"
         },
         "metricsContainerTemplate": {
           "description": "MetricsContainerTemplate contains customized spec for metrics container",
@@ -368,6 +394,10 @@
           "description": "Size is the NATS StatefulSet size",
           "type": "integer",
           "format": "int32"
+        },
+        "securityContext": {
+          "description": "SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.",
+          "$ref": "#/definitions/io.k8s.api.core.v1.PodSecurityContext"
         },
         "tolerations": {
           "description": "If specified, the pod's tolerations.",
@@ -467,7 +497,7 @@
           }
         },
         "sharedAccessKey": {
-          "description": "SharedAccessKey is the the generated value of the key",
+          "description": "SharedAccessKey is the generated value of the key",
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
         "sharedAccessKeyName": {
@@ -501,6 +531,10 @@
             "type": "string"
           }
         },
+        "persistence": {
+          "description": "Persistence hold the configuration for event persistence",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.EventPersistence"
+        },
         "schedule": {
           "description": "Schedule is a cron-like expression. For reference, see: https://en.wikipedia.org/wiki/Cron",
           "type": "string"
@@ -513,6 +547,32 @@
           "description": "UserPayload will be sent to sensor as extra data once the event is triggered Deprecated. Please use Metadata instead.",
           "type": "string",
           "format": "byte"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.CatchupConfiguration": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Enabled enables to triggered the missed schedule when eventsource restarts",
+          "type": "boolean"
+        },
+        "maxDuration": {
+          "description": "MaxDuration holds max catchup duration",
+          "type": "string"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.ConfigMapPersistence": {
+      "type": "object",
+      "properties": {
+        "createIfNotExist": {
+          "description": "CreateIfNotExist will create configmap if it doesn't exists",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "Name of the configmap",
+          "type": "string"
         }
       }
     },
@@ -563,6 +623,19 @@
         "username": {
           "description": "Username to use to connect to broker",
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.EventPersistence": {
+      "type": "object",
+      "properties": {
+        "catchup": {
+          "description": "Catchup enables to triggered the missed schedule when eventsource restarts",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.CatchupConfiguration"
+        },
+        "configMap": {
+          "description": "ConfigMap holds configmap details for persistence",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.ConfigMapPersistence"
         }
       }
     },
@@ -728,7 +801,7 @@
           }
         },
         "pubSub": {
-          "description": "PubSub eevnt sources",
+          "description": "PubSub event sources",
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.PubSubEventSource"
@@ -860,11 +933,31 @@
       "description": "GenericEventSource refers to a generic event source. It can be used to implement a custom event source.",
       "type": "object",
       "required": [
-        "value"
+        "url",
+        "config"
       ],
       "properties": {
-        "value": {
-          "description": "Value of the event source",
+        "config": {
+          "description": "Config is the event source configuration",
+          "type": "string"
+        },
+        "insecure": {
+          "description": "Insecure determines the type of connection.",
+          "type": "boolean"
+        },
+        "jsonBody": {
+          "description": "JSONBody specifies that all event body payload coming from this source will be JSON",
+          "type": "boolean"
+        },
+        "metadata": {
+          "description": "Metadata holds the user defined metadata which will passed along the event payload.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "description": "URL of the gRPC server that implements the event source.",
           "type": "string"
         }
       }
@@ -1130,7 +1223,7 @@
           "type": "string"
         },
         "url": {
-          "description": "URL to kafka cluster",
+          "description": "URL to kafka cluster, multiple URLs separated by comma",
           "type": "string"
         },
         "version": {
@@ -1178,24 +1271,6 @@
         "url": {
           "description": "URL to connect to broker",
           "type": "string"
-        }
-      }
-    },
-    "io.argoproj.eventsource.v1alpha1.Metadata": {
-      "description": "Metadata holds the annotations and labels of an event source pod",
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
         }
       }
     },
@@ -1286,7 +1361,7 @@
       ],
       "properties": {
         "credentialSecret": {
-          "description": "CredentialSecret references to the secret that contains JSON credentials to access GCP. If it is missing, it implicts to use Workload Identity to access. https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity",
+          "description": "CredentialSecret references to the secret that contains JSON credentials to access GCP. If it is missing, it implicitly uses Workload Identity to access. https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity",
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
         "credentialsFile": {
@@ -1313,7 +1388,7 @@
           "type": "string"
         },
         "subscriptionID": {
-          "description": "SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possiblity of event loss.",
+          "description": "SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possibility of event loss.",
           "type": "string"
         },
         "topic": {
@@ -1321,7 +1396,7 @@
           "type": "string"
         },
         "topicProjectID": {
-          "description": "TopicProjectID is GCP project ID for the the topic. By default, it is same as ProjectID.",
+          "description": "TopicProjectID is GCP project ID for the topic. By default, it is same as ProjectID.",
           "type": "string"
         }
       }
@@ -1483,7 +1558,7 @@
           "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
         },
         "fields": {
-          "description": "Fields provide listing options to K8s API to watch resource/s. Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/ for more info.",
+          "description": "Fields provide field filters similar to K8s field selector (see https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/). Unlike K8s field selector, it supports arbitrary fileds like \"spec.serviceAccountName\", and the value could be a string or a regex. Same as K8s field selector, operator \"=\", \"==\" and \"!=\" are supported.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.Selector"
@@ -1779,8 +1854,8 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.Container"
         },
         "metadata": {
-          "description": "Metdata sets the pods's metadata, i.e. annotations and labels",
-          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.Metadata"
+          "description": "Metadata sets the pods's metadata, i.e. annotations and labels",
+          "$ref": "#/definitions/io.argoproj.common.Metadata"
         },
         "nodeSelector": {
           "description": "NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/",
@@ -1805,7 +1880,7 @@
           }
         },
         "volumes": {
-          "description": "Volumes is a list of volumes that can be mounted by containers in a workflow.",
+          "description": "Volumes is a list of volumes that can be mounted by containers in an eventsource.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.k8s.api.core.v1.Volume"
@@ -2202,9 +2277,6 @@
     "io.argoproj.sensor.v1alpha1.EventDependencyFilter": {
       "description": "EventDependencyFilter defines filters and constraints for a event.",
       "type": "object",
-      "required": [
-        "name"
-      ],
       "properties": {
         "context": {
           "description": "Context filter constraints",
@@ -2216,10 +2288,6 @@
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.DataFilter"
           }
-        },
-        "name": {
-          "description": "Name is the name of event filter",
-          "type": "string"
         },
         "time": {
           "description": "Time filter on the event with escalation",
@@ -2451,24 +2519,6 @@
         "url": {
           "description": "URL of the Kafka broker.",
           "type": "string"
-        }
-      }
-    },
-    "io.argoproj.sensor.v1alpha1.Metadata": {
-      "description": "Metadata holds the annotations and labels of an event source pod",
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
         }
       }
     },
@@ -2758,8 +2808,8 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.Container"
         },
         "metadata": {
-          "description": "Metdata sets the pods's metadata, i.e. annotations and labels",
-          "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.Metadata"
+          "description": "Metadata sets the pods's metadata, i.e. annotations and labels",
+          "$ref": "#/definitions/io.argoproj.common.Metadata"
         },
         "nodeSelector": {
           "description": "NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/",

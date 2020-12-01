@@ -70,11 +70,11 @@ public class ResourceFilter {
   }
 
    /**
-   * Fields provide listing options to K8s API to watch resource/s. Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/ for more info.
+   * Fields provide field filters similar to K8s field selector (see https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/). Unlike K8s field selector, it supports arbitrary fileds like \&quot;spec.serviceAccountName\&quot;, and the value could be a string or a regex. Same as K8s field selector, operator \&quot;&#x3D;\&quot;, \&quot;&#x3D;&#x3D;\&quot; and \&quot;!&#x3D;\&quot; are supported.
    * @return fields
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Fields provide listing options to K8s API to watch resource/s. Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/ for more info.")
+  @ApiModelProperty(value = "Fields provide field filters similar to K8s field selector (see https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/). Unlike K8s field selector, it supports arbitrary fileds like \"spec.serviceAccountName\", and the value could be a string or a regex. Same as K8s field selector, operator \"=\", \"==\" and \"!=\" are supported.")
 
   public List<Selector> getFields() {
     return fields;

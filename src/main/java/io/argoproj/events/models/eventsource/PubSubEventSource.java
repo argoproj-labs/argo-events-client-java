@@ -78,11 +78,11 @@ public class PubSubEventSource {
   }
 
    /**
-   * TopicProjectID is GCP project ID for the the topic. By default, it is same as ProjectID.
+   * TopicProjectID is GCP project ID for the topic. By default, it is same as ProjectID.
    * @return topicProjectID
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "TopicProjectID is GCP project ID for the the topic. By default, it is same as ProjectID.")
+  @ApiModelProperty(value = "TopicProjectID is GCP project ID for the topic. By default, it is same as ProjectID.")
 
   public String getTopicProjectID() {
     return topicProjectID;
@@ -193,11 +193,11 @@ public class PubSubEventSource {
   }
 
    /**
-   * SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possiblity of event loss.
+   * SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possibility of event loss.
    * @return subscriptionID
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possiblity of event loss.")
+  @ApiModelProperty(value = "SubscriptionID is ID of subscription. Required if you use existing subscription. The default value will be auto generated hash based on this eventsource setting, so the subscription might be recreated every time you update the setting, which has a possibility of event loss.")
 
   public String getSubscriptionID() {
     return subscriptionID;
