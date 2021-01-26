@@ -27,33 +27,25 @@ import org.junit.Test;
 
 
 /**
- * Model tests for URLArtifact
+ * Model tests for LogTrigger
  */
-public class URLArtifactTest {
-    private final URLArtifact model = new URLArtifact();
+public class LogTriggerTest {
+    private final LogTrigger model = new LogTrigger();
 
     /**
-     * Model tests for URLArtifact
+     * Model tests for LogTrigger
      */
     @Test
-    public void testURLArtifact() {
-        // TODO: test URLArtifact
+    public void testLogTrigger() {
+        // TODO: test LogTrigger
     }
 
     /**
-     * Test the property 'path'
+     * Test the property 'intervalSeconds'
      */
     @Test
-    public void pathTest() {
-        // TODO: test path
-    }
-
-    /**
-     * Test the property 'verifyCert'
-     */
-    @Test
-    public void verifyCertTest() {
-        // TODO: test verifyCert
+    public void intervalSecondsTest() {
+        // TODO: test intervalSeconds
     }
 
 }

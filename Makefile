@@ -1,4 +1,4 @@
-VERSION := v1.1.0
+VERSION := v1.2.1
 
 GENERATOR_VERSION := v4.3.1
 
