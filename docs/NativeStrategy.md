@@ -7,13 +7,16 @@ NativeStrategy indicates to install a native NATS service
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**antiAffinity** | **Boolean** |  |  [optional]
+**antiAffinity** | **Boolean** | Deprecated, use Affinity instead, will be removed in v1.5 |  [optional]
+**priorityClassName** | **String** | If specified, indicates the EventSource pod&#39;s priority. \&quot;system-node-critical\&quot; and \&quot;system-cluster-critical\&quot; are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |  [optional]
 **securityContext** | [**V1PodSecurityContext**](V1PodSecurityContext.md) |  |  [optional]
 **serviceAccountName** | **String** | ServiceAccountName to apply to NATS StatefulSet |  [optional]
 **replicas** | **Integer** | Size is the NATS StatefulSet size |  [optional]
 **maxAge** | **String** | Max Age of existing messages, i.e. \&quot;72h\&quot;, “4h35m” |  [optional]
 **auth** | **String** |  |  [optional]
 **nodeSelector** | **Map&lt;String, String&gt;** | NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node&#39;s labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ |  [optional]
+**priority** | **Integer** | The priority value. Various system components use this field to find the priority of the EventSource pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |  [optional]
+**affinity** | [**V1Affinity**](V1Affinity.md) |  |  [optional]
 **metricsContainerTemplate** | [**ContainerTemplate**](ContainerTemplate.md) |  |  [optional]
 **containerTemplate** | [**ContainerTemplate**](ContainerTemplate.md) |  |  [optional]
 **tolerations** | [**List&lt;V1Toleration&gt;**](V1Toleration.md) | If specified, the pod&#39;s tolerations. |  [optional]

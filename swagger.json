@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Argo Events",
-    "version": "v1.2.1"
+    "version": "v1.3.0"
   },
   "paths": {},
   "definitions": {
@@ -13,15 +13,10 @@
     "io.argoproj.common.Backoff": {
       "description": "Backoff for an operation",
       "type": "object",
-      "required": [
-        "duration",
-        "factor"
-      ],
       "properties": {
         "duration": {
-          "description": "Duration is the duration in nanoseconds",
-          "type": "integer",
-          "format": "int64"
+          "description": "The initial duration in nanoseconds or strings like \"1s\", \"3m\"",
+          "$ref": "#/definitions/io.argoproj.common.Int64OrString"
         },
         "factor": {
           "description": "Duration is multiplied by factor each iteration",
@@ -35,6 +30,20 @@
           "description": "Exit with error after this many steps",
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "io.argoproj.common.BasicAuth": {
+      "description": "BasicAuth contains the reference to K8s secrets that holds the username and password",
+      "type": "object",
+      "properties": {
+        "password": {
+          "description": "Password refers to the Kubernetes secret that holds the password required for basic auth.",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        },
+        "username": {
+          "description": "Username refers to the Kubernetes secret that holds the username required for basic auth.",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         }
       }
     },
@@ -67,6 +76,10 @@
           "type": "string"
         }
       }
+    },
+    "io.argoproj.common.Int64OrString": {
+      "type": "string",
+      "format": "int64-or-string"
     },
     "io.argoproj.common.Metadata": {
       "description": "Metadata holds the annotations and labels of an event source pod",
@@ -184,14 +197,9 @@
     "io.argoproj.common.TLSConfig": {
       "description": "TLSConfig refers to TLS configuration for a client.",
       "type": "object",
-      "required": [
-        "caCertPath",
-        "clientCertPath",
-        "clientKeyPath"
-      ],
       "properties": {
         "caCertPath": {
-          "description": "DeprecatedCACertPath refers the file path that contains the CA cert. Deprecated: use CACertSecret instead",
+          "description": "DeprecatedCACertPath refers the file path that contains the CA cert. Deprecated: will be removed in v1.5, use CACertSecret instead",
           "type": "string"
         },
         "caCertSecret": {
@@ -199,7 +207,7 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
         "clientCertPath": {
-          "description": "DeprecatedClientCertPath refers the file path that contains client cert. Deprecated: use ClientCertSecret instead",
+          "description": "DeprecatedClientCertPath refers the file path that contains client cert. Deprecated: will be removed in v1.5, use ClientCertSecret instead",
           "type": "string"
         },
         "clientCertSecret": {
@@ -207,7 +215,7 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
         "clientKeyPath": {
-          "description": "DeprecatedClientKeyPath refers the file path that contains client key. Deprecated: use ClientKeySecret instead",
+          "description": "DeprecatedClientKeyPath refers the file path that contains client key. Deprecated: will be removed in v1.5, use ClientKeySecret instead",
           "type": "string"
         },
         "clientKeySecret": {
@@ -239,8 +247,7 @@
       "type": "object",
       "required": [
         "metadata",
-        "spec",
-        "status"
+        "spec"
       ],
       "properties": {
         "apiVersion": {
@@ -358,7 +365,12 @@
       "description": "NativeStrategy indicates to install a native NATS service",
       "type": "object",
       "properties": {
+        "affinity": {
+          "description": "The pod's scheduling constraints More info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+          "$ref": "#/definitions/io.k8s.api.core.v1.Affinity"
+        },
         "antiAffinity": {
+          "description": "Deprecated, use Affinity instead, will be removed in v1.5",
           "type": "boolean"
         },
         "auth": {
@@ -398,6 +410,15 @@
         },
         "persistence": {
           "$ref": "#/definitions/io.argoproj.eventbus.v1alpha1.PersistenceStrategy"
+        },
+        "priority": {
+          "description": "The priority value. Various system components use this field to find the priority of the EventSource pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/",
+          "type": "integer",
+          "format": "int32"
+        },
+        "priorityClassName": {
+          "description": "If specified, indicates the EventSource pod's priority. \"system-node-critical\" and \"system-cluster-critical\" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/",
+          "type": "string"
         },
         "replicas": {
           "description": "Size is the NATS StatefulSet size",
@@ -439,6 +460,32 @@
         }
       }
     },
+    "io.argoproj.eventsource.v1alpha1.AMQPConsumeConfig": {
+      "description": "AMQPConsumeConfig holds the configuration to immediately starts delivering queued messages",
+      "type": "object",
+      "properties": {
+        "autoAck": {
+          "description": "AutoAck when true, the server will acknowledge deliveries to this consumer prior to writing the delivery to the network",
+          "type": "boolean"
+        },
+        "consumerTag": {
+          "description": "ConsumerTag is the identity of the consumer included in every delivery",
+          "type": "string"
+        },
+        "exclusive": {
+          "description": "Exclusive when true, the server will ensure that this is the sole consumer from this queue",
+          "type": "boolean"
+        },
+        "noLocal": {
+          "description": "NoLocal flag is not supported by RabbitMQ",
+          "type": "boolean"
+        },
+        "noWait": {
+          "description": "NowWait when true, do not wait for the server to confirm the request and immediately begin deliveries",
+          "type": "boolean"
+        }
+      }
+    },
     "io.argoproj.eventsource.v1alpha1.AMQPEventSource": {
       "description": "AMQPEventSource refers to an event-source for AMQP stream events",
       "type": "object",
@@ -452,6 +499,14 @@
         "connectionBackoff": {
           "description": "Backoff holds parameters applied to connection.",
           "$ref": "#/definitions/io.argoproj.common.Backoff"
+        },
+        "consume": {
+          "description": "Consume holds the configuration to immediately starts delivering queued messages For more information, visit https://godoc.org/github.com/streadway/amqp#Channel.Consume",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.AMQPConsumeConfig"
+        },
+        "exchangeDeclare": {
+          "description": "ExchangeDeclare holds the configuration for the exchange on the server For more information, visit https://godoc.org/github.com/streadway/amqp#Channel.ExchangeDeclare",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.AMQPExchangeDeclareConfig"
         },
         "exchangeName": {
           "description": "ExchangeName is the exchange name For more information, visit https://www.rabbitmq.com/tutorials/amqp-concepts.html",
@@ -472,6 +527,14 @@
             "type": "string"
           }
         },
+        "queueBind": {
+          "description": "QueueBind holds the configuration that binds an exchange to a queue so that publishings to the exchange will be routed to the queue when the publishing routing key matches the binding routing key For more information, visit https://godoc.org/github.com/streadway/amqp#Channel.QueueBind",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.AMQPQueueBindConfig"
+        },
+        "queueDeclare": {
+          "description": "QueueDeclare holds the configuration of a queue to hold messages and deliver to consumers. Declaring creates a queue if it doesn't already exist, or ensures that an existing queue matches the same parameters For more information, visit https://godoc.org/github.com/streadway/amqp#Channel.QueueDeclare",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.AMQPQueueDeclareConfig"
+        },
         "routingKey": {
           "description": "Routing key for bindings",
           "type": "string"
@@ -483,6 +546,64 @@
         "url": {
           "description": "URL for rabbitmq service",
           "type": "string"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.AMQPExchangeDeclareConfig": {
+      "description": "AMQPExchangeDeclareConfig holds the configuration for the exchange on the server",
+      "type": "object",
+      "properties": {
+        "autoDelete": {
+          "description": "AutoDelete removes the exchange when no bindings are active",
+          "type": "boolean"
+        },
+        "durable": {
+          "description": "Durable keeps the exchange also after the server restarts",
+          "type": "boolean"
+        },
+        "internal": {
+          "description": "Internal when true does not accept publishings",
+          "type": "boolean"
+        },
+        "noWait": {
+          "description": "NowWait when true does not wait for a confirmation from the server",
+          "type": "boolean"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.AMQPQueueBindConfig": {
+      "description": "AMQPQueueBindConfig holds the configuration that binds an exchange to a queue so that publishings to the exchange will be routed to the queue when the publishing routing key matches the binding routing key",
+      "type": "object",
+      "properties": {
+        "noWait": {
+          "description": "NowWait false and the queue could not be bound, the channel will be closed with an error",
+          "type": "boolean"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.AMQPQueueDeclareConfig": {
+      "description": "AMQPQueueDeclareConfig holds the configuration of a queue to hold messages and deliver to consumers. Declaring creates a queue if it doesn't already exist, or ensures that an existing queue matches the same parameters",
+      "type": "object",
+      "properties": {
+        "autoDelete": {
+          "description": "AutoDelete removes the queue when no consumers are active",
+          "type": "boolean"
+        },
+        "durable": {
+          "description": "Durable keeps the queue also after the server restarts",
+          "type": "boolean"
+        },
+        "exclusive": {
+          "description": "Exclusive sets the queues to be accessible only by the connection that declares them and will be deleted wgen the connection closes",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "Name of the queue. If empty the server auto-generates a unique name for this queue",
+          "type": "string"
+        },
+        "noWait": {
+          "description": "NowWait when true, the queue assumes to be declared on the server",
+          "type": "boolean"
         }
       }
     },
@@ -557,7 +678,7 @@
           "type": "string"
         },
         "userPayload": {
-          "description": "UserPayload will be sent to sensor as extra data once the event is triggered Deprecated. Please use Metadata instead.",
+          "description": "UserPayload will be sent to sensor as extra data once the event is triggered Deprecated: will be removed in v1.5. Please use Metadata instead.",
           "type": "string",
           "format": "byte"
         }
@@ -657,8 +778,7 @@
       "type": "object",
       "required": [
         "metadata",
-        "spec",
-        "status"
+        "spec"
       ],
       "properties": {
         "apiVersion": {
@@ -835,7 +955,12 @@
           }
         },
         "replica": {
-          "description": "Replica is the event source deployment replicas",
+          "description": "DeprecatedReplica is the event source deployment replicas Deprecated: use replicas instead, will be removed in v1.5",
+          "type": "integer",
+          "format": "int32"
+        },
+        "replicas": {
+          "description": "Replicas is the event source deployment replicas",
           "type": "integer",
           "format": "int32"
         },
@@ -1291,6 +1416,28 @@
         }
       }
     },
+    "io.argoproj.eventsource.v1alpha1.NATSAuth": {
+      "description": "NATSAuth refers to the auth info for NATS EventSource",
+      "type": "object",
+      "properties": {
+        "basic": {
+          "description": "Baisc auth with username and password",
+          "$ref": "#/definitions/io.argoproj.common.BasicAuth"
+        },
+        "credential": {
+          "description": "credential used to connect",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        },
+        "nkey": {
+          "description": "NKey used to connect",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        },
+        "token": {
+          "description": "Token used to connect",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        }
+      }
+    },
     "io.argoproj.eventsource.v1alpha1.NATSEventsSource": {
       "description": "NATSEventsSource refers to event-source for NATS related events",
       "type": "object",
@@ -1299,6 +1446,10 @@
         "subject"
       ],
       "properties": {
+        "auth": {
+          "description": "Auth information",
+          "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.NATSAuth"
+        },
         "connectionBackoff": {
           "description": "ConnectionBackoff holds backoff applied to connection.",
           "$ref": "#/definitions/io.argoproj.common.Backoff"
@@ -1382,7 +1533,7 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
         "credentialsFile": {
-          "description": "CredentialsFile is the file that contains credentials to authenticate for GCP Deprecated, use CredentialSecret instead",
+          "description": "CredentialsFile is the file that contains credentials to authenticate for GCP Deprecated: will be removed in v1.5, use CredentialSecret instead",
           "type": "string"
         },
         "deleteSubscriptionOnFinish": {
@@ -1894,6 +2045,15 @@
             "type": "string"
           }
         },
+        "priority": {
+          "description": "The priority value. Various system components use this field to find the priority of the EventSource pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/",
+          "type": "integer",
+          "format": "int32"
+        },
+        "priorityClassName": {
+          "description": "If specified, indicates the EventSource pod's priority. \"system-node-critical\" and \"system-cluster-critical\" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/",
+          "type": "string"
+        },
         "securityContext": {
           "description": "SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.",
           "$ref": "#/definitions/io.k8s.api.core.v1.PodSecurityContext"
@@ -2102,16 +2262,44 @@
         }
       }
     },
-    "io.argoproj.sensor.v1alpha1.BasicAuth": {
-      "description": "BasicAuth contains the reference to K8s secrets that holds the username and password",
+    "io.argoproj.sensor.v1alpha1.AzureEventHubsTrigger": {
+      "description": "AzureEventHubsTrigger refers to specification of the Azure Event Hubs Trigger",
       "type": "object",
+      "required": [
+        "fqdn",
+        "hubName",
+        "sharedAccessKeyName",
+        "payload"
+      ],
       "properties": {
-        "password": {
-          "description": "Password refers to the Kubernetes secret that holds the password required for basic auth.",
+        "fqdn": {
+          "description": "FQDN refers to the namespace dns of Azure Event Hubs to be used i.e. \u003cnamespace\u003e.servicebus.windows.net",
+          "type": "string"
+        },
+        "hubName": {
+          "description": "HubName refers to the Azure Event Hub to send events to",
+          "type": "string"
+        },
+        "parameters": {
+          "description": "Parameters is the list of key-value extracted from event's payload that are applied to the trigger resource.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
+          }
+        },
+        "payload": {
+          "description": "Payload is the list of key-value extracted from an event payload to construct the request payload.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
+          }
+        },
+        "sharedAccessKey": {
+          "description": "SharedAccessKey refers to a K8s secret containing the primary key for the",
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
-        "username": {
-          "description": "Username refers to the Kubernetes secret that holds the username required for basic auth.",
+        "sharedAccessKeyName": {
+          "description": "SharedAccessKeyName refers to the name of the Shared Access Key",
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         }
       }
@@ -2127,7 +2315,7 @@
       ],
       "properties": {
         "certFilePath": {
-          "description": "DeprecatedCertFilePath is path to the cert file within sensor for secure connection between sensor and custom trigger gRPC server. DEPRECATED: use CertSecret instead",
+          "description": "DeprecatedCertFilePath is path to the cert file within sensor for secure connection between sensor and custom trigger gRPC server. Deprecated: will be removed in v1.5, use CertSecret instead",
           "type": "string"
         },
         "certSecret": {
@@ -2182,6 +2370,10 @@
         },
         "path": {
           "description": "Path is the JSONPath of the event's (JSON decoded) data key Path is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'. To access an array value use the index as the key. The dot and wildcard characters can be escaped with '\\'. See https://github.com/tidwall/gjson#path-syntax for more information on how to use this.",
+          "type": "string"
+        },
+        "template": {
+          "description": "Template is a go-template for extracting a string from the event's data. A Template is evaluated with provided path, type and value. The templating follows the standard go-template syntax as well as sprig's extra functions. See https://pkg.go.dev/text/template and https://masterminds.github.io/sprig/",
           "type": "string"
         },
         "type": {
@@ -2368,7 +2560,7 @@
           "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.GitRemoteConfig"
         },
         "sshKeyPath": {
-          "description": "DeprecatedSSHKeyPath is path to your ssh key path. Use this if you don't want to provide username and password. ssh key path must be mounted in sensor pod. DEPRECATED: use SSHKeySecret instead.",
+          "description": "DeprecatedSSHKeyPath is path to your ssh key path. Use this if you don't want to provide username and password. ssh key path must be mounted in sensor pod. Deprecated: will be removed in v1.5, use SSHKeySecret instead.",
           "type": "string"
         },
         "sshKeySecret": {
@@ -2428,7 +2620,7 @@
       "properties": {
         "basicAuth": {
           "description": "BasicAuth configuration for the http request.",
-          "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.BasicAuth"
+          "$ref": "#/definitions/io.argoproj.common.BasicAuth"
         },
         "headers": {
           "description": "Headers for the HTTP request.",
@@ -2547,7 +2739,7 @@
           "type": "string"
         },
         "url": {
-          "description": "URL of the Kafka broker.",
+          "description": "URL of the Kafka broker, multiple URLs separated by comma.",
           "type": "string"
         },
         "version": {
@@ -2649,8 +2841,7 @@
       "type": "object",
       "required": [
         "metadata",
-        "spec",
-        "status"
+        "spec"
       ],
       "properties": {
         "apiVersion": {
@@ -2708,7 +2899,7 @@
       ],
       "properties": {
         "circuit": {
-          "description": "Circuit is a boolean expression of dependency groups DEPRECATED: Use Switch in triggers instead.",
+          "description": "Circuit is a boolean expression of dependency groups Deprecated: will be removed in v1.5, use Switch in triggers instead.",
           "type": "string"
         },
         "dependencies": {
@@ -2732,6 +2923,11 @@
         "eventBusName": {
           "description": "EventBusName references to a EventBus name. By default the value is \"default\"",
           "type": "string"
+        },
+        "replicas": {
+          "description": "Replicas is the sensor deployment replicas",
+          "type": "integer",
+          "format": "int32"
         },
         "template": {
           "description": "Template is the pod specification for the sensor",
@@ -2847,6 +3043,10 @@
       "description": "Template holds the information of a sensor deployment template",
       "type": "object",
       "properties": {
+        "affinity": {
+          "description": "If specified, the pod's scheduling constraints",
+          "$ref": "#/definitions/io.k8s.api.core.v1.Affinity"
+        },
         "container": {
           "description": "Container is the main container image to run in the sensor pod",
           "$ref": "#/definitions/io.k8s.api.core.v1.Container"
@@ -2870,6 +3070,15 @@
           "additionalProperties": {
             "type": "string"
           }
+        },
+        "priority": {
+          "description": "The priority value. Various system components use this field to find the priority of the EventSource pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/",
+          "type": "integer",
+          "format": "int32"
+        },
+        "priorityClassName": {
+          "description": "If specified, indicates the EventSource pod's priority. \"system-node-critical\" and \"system-cluster-critical\" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/",
+          "type": "string"
         },
         "securityContext": {
           "description": "SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.",
@@ -2929,6 +3138,10 @@
         "policy": {
           "description": "Policy to configure backoff and execution criteria for the trigger",
           "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerPolicy"
+        },
+        "retryStrategy": {
+          "description": "Retry strategy, defaults to no retry",
+          "$ref": "#/definitions/io.argoproj.common.Backoff"
         },
         "template": {
           "description": "Template describes the trigger specification.",
@@ -3005,7 +3218,7 @@
       }
     },
     "io.argoproj.sensor.v1alpha1.TriggerSwitch": {
-      "description": "TriggerSwitch describes condition which must be satisfied in order to execute a trigger. Depending upon condition type, status of dependency groups is used to evaluate the result. DEPRECATED",
+      "description": "TriggerSwitch describes condition which must be satisfied in order to execute a trigger. Depending upon condition type, status of dependency groups is used to evaluate the result. Deprecated: will be removed in v1.5",
       "type": "object",
       "properties": {
         "all": {
@@ -3038,6 +3251,10 @@
         "awsLambda": {
           "description": "AWSLambda refers to the trigger designed to invoke AWS Lambda function with with on-the-fly constructable payload.",
           "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.AWSLambdaTrigger"
+        },
+        "azureEventHubs": {
+          "description": "AzureEventHubs refers to the trigger send an event to an Azure Event Hub.",
+          "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.AzureEventHubsTrigger"
         },
         "conditions": {
           "description": "Conditions is the conditions to execute the trigger. For example: \"(dep01 || dep02) \u0026\u0026 dep04\"",
@@ -3080,7 +3297,7 @@
           "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.SlackTrigger"
         },
         "switch": {
-          "description": "DeprecatedSwitch is the condition to execute the trigger. DEPRECATED: USE conditions instead",
+          "description": "DeprecatedSwitch is the condition to execute the trigger. Deprecated: will be removed in v1.5, use conditions instead",
           "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerSwitch"
         }
       }

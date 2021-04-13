@@ -44,7 +44,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.argoproj.events</groupId>
   <artifactId>argo-events-client-java</artifactId>
-  <version>v1.2.1</version>
+  <version>v1.3.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -54,7 +54,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.argoproj.events:argo-events-client-java:v1.2.1"
+compile "io.argoproj.events:argo-events-client-java:v1.3.0"
 ```
 
 ### Others
@@ -67,7 +67,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/argo-events-client-java-v1.2.1.jar`
+- `target/argo-events-client-java-v1.3.0.jar`
 - `target/lib/*.jar`
 
 ## Getting Started

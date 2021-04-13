@@ -1,4 +1,4 @@
-VERSION := v1.2.1
+VERSION := v1.3.0
 
 GENERATOR_VERSION := v4.3.1
 
@@ -129,6 +129,7 @@ build:
 		--import-mappings Backoff=io.argoproj.events.models.common.Backoff \
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
 		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
+		--import-mappings BasicAuth=io.argoproj.events.models.common.BasicAuth \
 		--generate-alias-as-model
 	
 	# sensor
@@ -177,6 +178,7 @@ build:
 		--import-mappings Backoff=io.argoproj.events.models.common.Backoff \
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
 		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
+		--import-mappings BasicAuth=io.argoproj.events.models.common.BasicAuth \
 		--import-mappings Resource=java.lang.Object \
 		--generate-alias-as-model
 	

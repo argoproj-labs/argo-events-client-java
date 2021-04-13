@@ -2,7 +2,7 @@
 
 # TriggerSwitch
 
-TriggerSwitch describes condition which must be satisfied in order to execute a trigger. Depending upon condition type, status of dependency groups is used to evaluate the result. DEPRECATED
+TriggerSwitch describes condition which must be satisfied in order to execute a trigger. Depending upon condition type, status of dependency groups is used to evaluate the result. Deprecated: will be removed in v1.5
 ## Properties
 
 Name | Type | Description | Notes
