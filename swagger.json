@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Argo Events",
-    "version": "v1.3.0"
+    "version": "v1.4.0"
   },
   "paths": {},
   "definitions": {
@@ -179,6 +179,37 @@
         }
       }
     },
+    "io.argoproj.common.SASLConfig": {
+      "description": "SASLConfig refers to SASL configuration for a client",
+      "type": "object",
+      "properties": {
+        "mechanism": {
+          "description": "SASLMechanism is the name of the enabled SASL mechanism. Possible values: OAUTHBEARER, PLAIN (defaults to PLAIN).",
+          "type": "string"
+        },
+        "passwordSecret": {
+          "description": "Password for SASL/PLAIN authentication",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        },
+        "userSecret": {
+          "description": "User is the authentication identity (authcid) to present for SASL/PLAIN or SASL/SCRAM authentication",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        }
+      }
+    },
+    "io.argoproj.common.SecureHeader": {
+      "description": "SecureHeader refers to HTTP Headers with auth tokens as values",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "valueFrom": {
+          "description": "Values can be read from either secrets or configmaps",
+          "$ref": "#/definitions/io.argoproj.common.ValueFromSource"
+        }
+      }
+    },
     "io.argoproj.common.Status": {
       "description": "Status is a common structure which can be used for Status field.",
       "type": "object",
@@ -220,6 +251,18 @@
         },
         "clientKeySecret": {
           "description": "ClientKeySecret refers to the secret that contains the client key",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        }
+      }
+    },
+    "io.argoproj.common.ValueFromSource": {
+      "description": "ValueFromSource allows you to reference keys from either a Configmap or Secret",
+      "type": "object",
+      "properties": {
+        "configMapKeyRef": {
+          "$ref": "#/definitions/io.k8s.api.core.v1.ConfigMapKeySelector"
+        },
+        "secretKeyRef": {
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         }
       }
@@ -393,6 +436,15 @@
           "description": "Max Age of existing messages, i.e. \"72h\", “4h35m”",
           "type": "string"
         },
+        "maxBytes": {
+          "description": "Total size of messages per channel, 0 means unlimited. Defaults to 1GB",
+          "type": "string"
+        },
+        "maxMsgs": {
+          "description": "Maximum number of messages per channel, 0 means unlimited. Defaults to 1000000",
+          "type": "integer",
+          "format": "int64"
+        },
         "metadata": {
           "description": "Metadata sets the pods's metadata, i.e. annotations and labels",
           "$ref": "#/definitions/io.argoproj.common.Metadata"
@@ -496,6 +548,10 @@
         "routingKey"
       ],
       "properties": {
+        "auth": {
+          "description": "Auth hosts secret selectors for username and password",
+          "$ref": "#/definitions/io.argoproj.common.BasicAuth"
+        },
         "connectionBackoff": {
           "description": "Backoff holds parameters applied to connection.",
           "$ref": "#/definitions/io.argoproj.common.Backoff"
@@ -1145,7 +1201,7 @@
           "type": "string"
         },
         "id": {
-          "description": "Id is the webhook's id",
+          "description": "Id is the webhook's id Deprecated: This is not used at all, will be removed in v1.6",
           "type": "integer",
           "format": "int64"
         },
@@ -1161,11 +1217,18 @@
           }
         },
         "owner": {
-          "description": "Owner refers to GitHub owner name i.e. argoproj",
+          "description": "DeprecatedOwner refers to GitHub owner name i.e. argoproj Deprecated: use Repositories instead. Will be unsupported in v 1.6",
           "type": "string"
         },
+        "repositories": {
+          "description": "Repositories holds the information of repositories, which uses repo owner as the key, and list of repo names as the value",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.eventsource.v1alpha1.OwnedRepositories"
+          }
+        },
         "repository": {
-          "description": "Repository refers to GitHub repo name i.e. argo-events",
+          "description": "DeprecatedRepository refers to GitHub repo name i.e. argo-events Deprecated: use Repositories instead. Will be unsupported in v 1.6",
           "type": "string"
         },
         "webhook": {
@@ -1356,6 +1419,10 @@
           "description": "Partition name",
           "type": "string"
         },
+        "sasl": {
+          "description": "SASL configuration for the kafka client",
+          "$ref": "#/definitions/io.argoproj.common.SASLConfig"
+        },
         "tls": {
           "description": "TLS configuration for the kafka client.",
           "$ref": "#/definitions/io.argoproj.common.TLSConfig"
@@ -1517,6 +1584,22 @@
         },
         "topic": {
           "description": "Topic to subscribe to.",
+          "type": "string"
+        }
+      }
+    },
+    "io.argoproj.eventsource.v1alpha1.OwnedRepositories": {
+      "type": "object",
+      "properties": {
+        "names": {
+          "description": "Repository names",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "owner": {
+          "description": "Orgnization or user name",
           "type": "string"
         }
       }
@@ -2172,13 +2255,19 @@
           "description": "FunctionName refers to the name of the function to invoke.",
           "type": "string"
         },
+        "invocationType": {
+          "description": "Choose from the following options.\n\n   * RequestResponse (default) - Invoke the function synchronously. Keep\n   the connection open until the function returns a response or times out.\n   The API response includes the function response and additional data.\n\n   * Event - Invoke the function asynchronously. Send events that fail multiple\n   times to the function's dead-letter queue (if it's configured). The API\n   response only includes a status code.\n\n   * DryRun - Validate parameter values and verify that the user or role\n   has permission to invoke the function.",
+          "type": "string"
+        },
         "parameters": {
+          "description": "Parameters is the list of key-value extracted from event's payload that are applied to the trigger resource.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
           }
         },
         "payload": {
+          "description": "Payload is the list of key-value extracted from an event payload to construct the request payload.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2211,6 +2300,7 @@
           "type": "string"
         },
         "parameters": {
+          "description": "Parameters is the list of parameters to pass to resolved Argo Workflow object",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2323,12 +2413,14 @@
           "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
         },
         "parameters": {
+          "description": "Parameters is the list of parameters that is applied to resolved custom trigger trigger object.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
           }
         },
         "payload": {
+          "description": "Payload is the list of key-value extracted from an event payload to construct the request payload.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2511,9 +2603,36 @@
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.DataFilter"
           }
         },
+        "exprs": {
+          "description": "Exprs contains the list of expressions evaluated against the event payload.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.ExprFilter"
+          }
+        },
         "time": {
           "description": "Time filter on the event with escalation",
           "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TimeFilter"
+        }
+      }
+    },
+    "io.argoproj.sensor.v1alpha1.ExprFilter": {
+      "type": "object",
+      "required": [
+        "expr",
+        "fields"
+      ],
+      "properties": {
+        "expr": {
+          "description": "Expr refers to the expression that determines the outcome of the filter.",
+          "type": "string"
+        },
+        "fields": {
+          "description": "Fields refers to set of keys that refer to the paths within event payload.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.PayloadField"
+          }
         }
       }
     },
@@ -2634,6 +2753,7 @@
           "type": "string"
         },
         "parameters": {
+          "description": "Parameters is the list of key-value extracted from event's payload that are applied to the HTTP trigger resource.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2643,6 +2763,13 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
+          }
+        },
+        "secureHeaders": {
+          "description": "Secure Headers stored in Kubernetes Secrets for the HTTP requests.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/io.argoproj.common.SecureHeader"
           }
         },
         "timeout": {
@@ -2705,6 +2832,7 @@
           "format": "int32"
         },
         "parameters": {
+          "description": "Parameters is the list of parameters that is applied to resolved Kafka trigger object.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2720,6 +2848,7 @@
           "type": "string"
         },
         "payload": {
+          "description": "Payload is the list of key-value extracted from an event payload to construct the request payload.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2729,6 +2858,10 @@
           "description": "RequiredAcks used in producer to tell the broker how many replica acknowledgements Defaults to 1 (Only wait for the leader to ack).",
           "type": "integer",
           "format": "int32"
+        },
+        "sasl": {
+          "description": "SASL configuration for the kafka client",
+          "$ref": "#/definitions/io.argoproj.common.SASLConfig"
         },
         "tls": {
           "description": "TLS configuration for the Kafka producer.",
@@ -2819,12 +2952,14 @@
           "type": "string"
         },
         "parameters": {
+          "description": "Parameters is the list of key-value extracted from event's payload that are applied to the trigger resource.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
           }
         },
         "payload": {
+          "description": "Payload is the list of key-value extracted from an event payload to construct the request payload.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -2832,6 +2967,24 @@
         },
         "version": {
           "description": "Version for the API. Defaults to v1.",
+          "type": "string"
+        }
+      }
+    },
+    "io.argoproj.sensor.v1alpha1.PayloadField": {
+      "description": "PayloadField binds a value at path within the event payload against a name.",
+      "type": "object",
+      "required": [
+        "path",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "Name acts as key that holds the value at the path.",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path is the JSONPath of the event's (JSON decoded) data key Path is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'. To access an array value use the index as the key. The dot and wildcard characters can be escaped with '\\'. See https://github.com/tidwall/gjson#path-syntax for more information on how to use this.",
           "type": "string"
         }
       }
@@ -2970,6 +3123,7 @@
           "type": "string"
         },
         "parameters": {
+          "description": "Parameters is the list of key-value extracted from event's payload that are applied to the trigger resource.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"
@@ -3002,6 +3156,7 @@
           "type": "string"
         },
         "parameters": {
+          "description": "Parameters is the list of parameters that is applied to resolved K8s trigger object.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/io.argoproj.sensor.v1alpha1.TriggerParameter"

@@ -1,4 +1,4 @@
-VERSION := v1.3.0
+VERSION := v1.4.0
 
 GENERATOR_VERSION := v4.3.1
 
@@ -130,6 +130,8 @@ build:
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
 		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
 		--import-mappings BasicAuth=io.argoproj.events.models.common.BasicAuth \
+                --import-mappings SecureHeader=io.argoproj.events.models.common.SecureHeader \
+                --import-mappings SASLConfig=io.argoproj.events.models.common.SASLConfig \
 		--generate-alias-as-model
 	
 	# sensor
@@ -179,6 +181,8 @@ build:
 		--import-mappings S3Artifact=io.argoproj.events.models.common.S3Artifact \
 		--import-mappings Metadata=io.argoproj.events.models.common.Metadata \
 		--import-mappings BasicAuth=io.argoproj.events.models.common.BasicAuth \
+                --import-mappings SecureHeader=io.argoproj.events.models.common.SecureHeader \
+                --import-mappings SASLConfig=io.argoproj.events.models.common.SASLConfig \
 		--import-mappings Resource=java.lang.Object \
 		--generate-alias-as-model
 	

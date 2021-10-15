@@ -8,7 +8,7 @@ ArgoWorkflowTrigger is the trigger for the Argo Workflow
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **resource** | **String** |  | 
-**parameters** | [**List&lt;TriggerParameter&gt;**](TriggerParameter.md) |  |  [optional]
+**parameters** | [**List&lt;TriggerParameter&gt;**](TriggerParameter.md) | Parameters is the list of parameters to pass to resolved Argo Workflow object |  [optional]
 **source** | [**ArtifactLocation**](ArtifactLocation.md) |  |  [optional]
 **version** | **String** |  | 
 **group** | **String** |  | 
