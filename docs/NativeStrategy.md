@@ -7,11 +7,11 @@ NativeStrategy indicates to install a native NATS service
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**antiAffinity** | **Boolean** | Deprecated, use Affinity instead, will be removed in v1.5 |  [optional]
 **priorityClassName** | **String** | If specified, indicates the EventSource pod&#39;s priority. \&quot;system-node-critical\&quot; and \&quot;system-cluster-critical\&quot; are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default. More info: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |  [optional]
 **securityContext** | [**V1PodSecurityContext**](V1PodSecurityContext.md) |  |  [optional]
 **serviceAccountName** | **String** | ServiceAccountName to apply to NATS StatefulSet |  [optional]
 **replicas** | **Integer** | Size is the NATS StatefulSet size |  [optional]
+**maxSubs** | **Long** | Maximum number of subscriptions per channel, 0 means unlimited. Defaults to 1000 |  [optional]
 **maxAge** | **String** | Max Age of existing messages, i.e. \&quot;72h\&quot;, “4h35m” |  [optional]
 **auth** | **String** |  |  [optional]
 **maxBytes** | **String** | Total size of messages per channel, 0 means unlimited. Defaults to 1GB |  [optional]

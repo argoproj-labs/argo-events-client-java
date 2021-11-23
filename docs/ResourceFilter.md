@@ -2,7 +2,7 @@
 
 # ResourceFilter
 
-ResourceFilter contains K8 ObjectMeta information to further filter resource event objects
+ResourceFilter contains K8s ObjectMeta information to further filter resource event objects
 ## Properties
 
 Name | Type | Description | Notes

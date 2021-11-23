@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **tls** | [**io.argoproj.events.models.common.TLSConfig**](io.argoproj.events.models.common.TLSConfig.md) |  |  [optional]
 **connectionBackoff** | [**io.argoproj.events.models.common.Backoff**](io.argoproj.events.models.common.Backoff.md) |  |  [optional]
+**authTokenSecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **url** | **String** | Configure the service URL for the Pulsar service. | 
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]
 **topics** | **List&lt;String&gt;** | Name of the topics to subscribe to. | 

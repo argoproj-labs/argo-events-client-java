@@ -7,9 +7,7 @@ WebhookContext holds a general purpose REST API context
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**serverCertPath** | **String** | DeprecatedServerCertPath refers the file that contains the cert. |  [optional]
 **endpoint** | **String** | REST API endpoint | 
-**serverKeyPath** | **String** | DeprecatedServerKeyPath refers the file that contains private key |  [optional]
 **authSecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **serverKeySecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **method** | **String** | Method is HTTP request method that indicates the desired action to be performed for a given resource. See RFC7231 Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content | 

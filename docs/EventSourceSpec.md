@@ -10,7 +10,6 @@ Name | Type | Description | Notes
 **gitlab** | [**Map&lt;String, GitlabEventSource&gt;**](GitlabEventSource.md) | Gitlab event sources |  [optional]
 **minio** | [**Map&lt;String, io.argoproj.events.models.common.S3Artifact&gt;**](io.argoproj.events.models.common.S3Artifact.md) | Minio event sources |  [optional]
 **kafka** | [**Map&lt;String, KafkaEventSource&gt;**](KafkaEventSource.md) | Kafka event sources |  [optional]
-**replica** | **Integer** | DeprecatedReplica is the event source deployment replicas Deprecated: use replicas instead, will be removed in v1.5 |  [optional]
 **file** | [**Map&lt;String, FileEventSource&gt;**](FileEventSource.md) | File event sources |  [optional]
 **nsq** | [**Map&lt;String, NSQEventSource&gt;**](NSQEventSource.md) | NSQ event source |  [optional]
 **pulsar** | [**Map&lt;String, PulsarEventSource&gt;**](PulsarEventSource.md) | Pulsar event source |  [optional]
@@ -35,6 +34,7 @@ Name | Type | Description | Notes
 **eventBusName** | **String** | EventBusName references to a EventBus name. By default the value is \&quot;default\&quot; |  [optional]
 **nats** | [**Map&lt;String, NATSEventsSource&gt;**](NATSEventsSource.md) | NATS event sources |  [optional]
 **storageGrid** | [**Map&lt;String, StorageGridEventSource&gt;**](StorageGridEventSource.md) | StorageGrid event sources |  [optional]
+**bitbucketserver** | [**Map&lt;String, BitbucketServerEventSource&gt;**](BitbucketServerEventSource.md) | Bitbucket Server event sources |  [optional]
 **stripe** | [**Map&lt;String, StripeEventSource&gt;**](StripeEventSource.md) | Stripe event sources |  [optional]
 
 
