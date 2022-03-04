@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **url** | **String** | URL to connect to NATS cluster | 
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]
 **auth** | [**NATSAuth**](NATSAuth.md) |  |  [optional]
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | Metadata holds the user defined metadata which will passed along the event payload. |  [optional]
 **subject** | **String** | Subject holds the name of the subject onto which messages are published | 
 

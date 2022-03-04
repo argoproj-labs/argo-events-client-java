@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **authSecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **insecure** | **Boolean** | Insecure determines the type of connection. |  [optional]
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **url** | **String** | URL of the gRPC server that implements the event source. | 
 **config** | **String** | Config is the event source configuration | 
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]

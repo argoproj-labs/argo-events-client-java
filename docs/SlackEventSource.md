@@ -7,6 +7,7 @@ SlackEventSource refers to event-source for Slack related events
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **signingSecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **token** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **webhook** | [**WebhookContext**](WebhookContext.md) |  |  [optional]

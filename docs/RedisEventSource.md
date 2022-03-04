@@ -8,6 +8,7 @@ RedisEventSource describes an event source for the Redis PubSub. More info at ht
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **tls** | [**io.argoproj.events.models.common.TLSConfig**](io.argoproj.events.models.common.TLSConfig.md) |  |  [optional]
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **db** | **Integer** | DB to use. If not specified, default DB 0 will be used. |  [optional]
 **namespace** | **String** | Namespace to use to retrieve the password from. It should only be specified if password is declared |  [optional]
 **channels** | **List&lt;String&gt;** |  | 

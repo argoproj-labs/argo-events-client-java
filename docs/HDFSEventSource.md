@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **krbCCacheSecret** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **krbRealm** | **String** | KrbRealm is the Kerberos realm used with Kerberos keytab It must be set if keytab is used. |  [optional]
 **hdfsUser** | **String** | HDFSUser is the user to access HDFS file system. It is ignored if either ccache or keytab is used. |  [optional]
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **pathRegexp** | **String** | PathRegexp is regexp of relative path of object to watch with respect to the directory |  [optional]
 **krbServicePrincipalName** | **String** | KrbServicePrincipalName is the principal name of Kerberos service It must be set if either ccache or keytab is used. |  [optional]
 **directory** | **String** | Directory to watch for events | 

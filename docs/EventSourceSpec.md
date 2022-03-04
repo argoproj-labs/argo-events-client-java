@@ -28,6 +28,7 @@ Name | Type | Description | Notes
 **sns** | [**Map&lt;String, SNSEventSource&gt;**](SNSEventSource.md) | SNS event sources |  [optional]
 **emitter** | [**Map&lt;String, EmitterEventSource&gt;**](EmitterEventSource.md) | Emitter event source |  [optional]
 **pubSub** | [**Map&lt;String, PubSubEventSource&gt;**](PubSubEventSource.md) | PubSub event sources |  [optional]
+**bitbucket** | [**Map&lt;String, BitbucketEventSource&gt;**](BitbucketEventSource.md) | Bitbucket event sources |  [optional]
 **github** | [**Map&lt;String, GithubEventSource&gt;**](GithubEventSource.md) | Github event sources |  [optional]
 **resource** | [**Map&lt;String, ResourceEventSource&gt;**](ResourceEventSource.md) | Resource event sources |  [optional]
 **slack** | [**Map&lt;String, SlackEventSource&gt;**](SlackEventSource.md) | Slack event sources |  [optional]

@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **tls** | [**io.argoproj.events.models.common.TLSConfig**](io.argoproj.events.models.common.TLSConfig.md) |  |  [optional]
 **connectionBackoff** | [**io.argoproj.events.models.common.Backoff**](io.argoproj.events.models.common.Backoff.md) |  |  [optional]
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **topic** | **String** | Topic to subscribe to. | 
 **hostAddress** | **String** | HostAddress is the address of the host for NSQ lookup | 
 **channel** | **String** | Channel used for subscription | 

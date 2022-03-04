@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **url** | **String** | URL to connect to broker | 
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]
 **clientId** | **String** | ClientID is the id of the client | 
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **topic** | **String** | Topic name | 
 **metadata** | **Map&lt;String, String&gt;** | Metadata holds the user defined metadata which will passed along the event payload. |  [optional]
 

@@ -7,9 +7,10 @@ SNSEventSource refers to event-source for AWS SNS related events
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**secretKey** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **accessKey** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
 **webhook** | [**WebhookContext**](WebhookContext.md) |  |  [optional]
-**secretKey** | [**V1SecretKeySelector**](V1SecretKeySelector.md) |  |  [optional]
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **validateSignature** | **Boolean** | ValidateSignature is boolean that can be set to true for SNS signature verification |  [optional]
 **region** | **String** | Region is AWS region | 
 **roleARN** | **String** | RoleARN is the Amazon Resource Name (ARN) of the role to assume. |  [optional]

@@ -12,8 +12,9 @@ Name | Type | Description | Notes
 **consumerGroup** | [**KafkaConsumerGroup**](KafkaConsumerGroup.md) |  |  [optional]
 **jsonBody** | **Boolean** | JSONBody specifies that all event body payload coming from this source will be JSON |  [optional]
 **partition** | **String** | Partition name | 
-**topic** | **String** | Topic name | 
+**filter** | [**EventSourceFilter**](EventSourceFilter.md) |  |  [optional]
 **url** | **String** | URL to kafka cluster, multiple URLs separated by comma | 
+**topic** | **String** | Topic name | 
 **version** | **String** | Specify what kafka version is being connected to enables certain features in sarama, defaults to 1.0.0 |  [optional]
 **sasl** | [**io.argoproj.events.models.common.SASLConfig**](io.argoproj.events.models.common.SASLConfig.md) |  |  [optional]
 **limitEventsPerSecond** | **Long** | Sets a limit on how many events get read from kafka per second. |  [optional]
