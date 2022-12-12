@@ -26,7 +26,11 @@ def main():
         exit(1)
 
     defs = swagger["definitions"]
-    for k in defs.keys():
+    keys = defs.keys()
+    if sys.version_info[0] == 3:
+        keys = defs.copy().keys()
+
+    for k in keys:
         if not k.startswith(prefix):
             del defs[k]
 
